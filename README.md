@@ -12,16 +12,16 @@
 
 | Componente | Ferramenta Escolhida |
 | :--- | :--- |
-| **Linguagens** | [cite_start]Python & Javascript  |
-| **Frameworks** | [cite_start]Node.js, Next.js  |
-| **Padrão de Código** | [cite_start]PEP 8 e Airbnb JavaScript  |
-| **Verificadores de Código** | [cite_start]flake8, JSLint  |
-| **Formatador de Código** | [cite_start]Black, Prettier  |
-| **Framework de Teste** | [cite_start]Pytest, Jest  |
-| [cite_start]**Verificador de Cobertura** | coverage.py, Jest --coverage  |
-| **Documentação** | [cite_start]???  |
-| **Controle de Versão** | [cite_start]Github  |
-| **Gestão de Projeto** | [cite_start]Asana  |
+| **Linguagens** | Python & Javascript  |
+| **Frameworks** | Node.js, Next.js  |
+| **Padrão de Código** | PEP 8 e Airbnb JavaScript  |
+| **Verificadores de Código** | flake8, JSLint  |
+| **Formatador de Código** | Black, Prettier  |
+| **Framework de Teste** | Pytest, Jest  |
+| **Verificador de Cobertura** | coverage.py, Jest --coverage  |
+| **Documentação** | ???  |
+| **Controle de Versão** | Github  |
+| **Gestão de Projeto** | Asana  |
 
 ## TUTORIAL DE PREPARAÇÃO DE AMBIENTE [no vscode linux]
 # essa etapa 0 é apenas para quem não conseguir a partir do 1
@@ -44,4 +44,4 @@ pre-commit
 1.  CLONE O REPOSITORIO (git)
 2.  rode `make install` (make)
 3.  venv/ `source backend/venv/bin/activate` (ative o ambiente virtual)
-4. rode `test` pra ver se ta tudo certo
+4. rode `make test` pra ver se ta tudo certo
