@@ -5,6 +5,7 @@
 
 venv/
 /backend/venv/
+/backend/.env
 /env/
 /.venv/
 

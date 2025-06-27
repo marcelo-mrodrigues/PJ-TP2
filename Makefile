@@ -42,6 +42,11 @@ coverage:
 run-dev:
 	npm --prefix ./frontend run dev
 
+# Inicia o servidor de desenvolvimento do Backend (Django)
+run-backend:
+	@echo "--- Iniciando servidor de desenvolvimento Backend (Django)..."
+	./backend/venv/bin/python backend/manage.py runserver
+
 # cache e build limpados
 clean:
 	@echo "--- Limpando arquivos de cache..."
