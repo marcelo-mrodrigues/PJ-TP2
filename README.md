@@ -99,9 +99,9 @@ Importante: Substitua SUA_DATABASE_URL_DO_RAILWAY pela URL real do seu serviço 
 
 ##  4- Rodar o Servidor de Desenvolvimento do Backend (Django)
 Inicie o servidor de desenvolvimento do Django.
-
+```
 make run-backend
-
+```
 O servidor Django estará acessível em http://127.0.0.1:8000/.
 
 
@@ -124,16 +124,19 @@ cd .. # Volte para a raiz do projeto
 ##  6- (Opicional)Criar Superusuário (para acesso ao Django Admin)
 Crie um usuário administrador para acessar o painel de administração do Django. Siga as instruções no terminal.
 
-# Navegue para a pasta backend para executar o comando manage.py
+1. Navegue para a pasta backend para executar o comando manage.py
+```
 cd backend
-# Ative o ambiente virtual
+```
+2. Ative o ambiente virtual
+```
 source venv/bin/activate
 python manage.py createsuperuser
 cd .. # Volte para a raiz do projeto
-
+```
 
 ##  7- (Opcional) Rodar os Testes
 Utilize o comando make test para rodar os testes.
-
+```
 make test
-
+```
