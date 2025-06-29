@@ -152,58 +152,137 @@ def login_view(request):
     )
     return render(request, "core/base_html_template.html", {"content": html_content})
 
-
 def product_catalog_view(request):
     """
-    Exibe o catálogo de produtos apenas para usuários autenticados.
-    O decorador @login_required verifica automaticamente se o usuário está logado.
-    Se não estiver, redireciona para a tela de login.
+    Exibe o catálogo de produtos com dados fixos. Só para teste.
     """
-
-    # Exemplo de produtos simples
-    produtos = [
-        {"nome": "Produto 1", "preco": "R$ 10,00"},
-        {"nome": "Produto 2", "preco": "R$ 20,00"},
-        {"nome": "Produto 3", "preco": "R$ 30,00"},
-        {"nome": "Produto 4", "preco": "R$ 40,00"},
-        {"nome": "Produto 5", "preco": "R$ 50,00"},
-        {"nome": "Produto 6", "preco": "R$ 60,00"},
-        {"nome": "Produto 7", "preco": "R$ 70,00"},
-        {"nome": "Produto 8", "preco": "R$ 80,00"},
-        {"nome": "Produto 9", "preco": "R$ 90,00"},
-        {"nome": "Produto 10", "preco": "R$ 100,00"},
+    produtos_data = [
+        {"id": 1, "name": "Livro", "imageUrl": "https://placehold.co/150x150/E0E0E0/333333?text=Livro"},
+        {"id": 2, "name": "Smartphone", "imageUrl": "https://placehold.co/150x150/E0E0E0/333333?text=Phone"},
+        {"id": 3, "name": "Fone de Ouvido", "imageUrl": "https://placehold.co/150x150/E0E0E0/333333?text=Fone"},
+        {"id": 4, "name": "Câmera", "imageUrl": "https://placehold.co/150x150/E0E0E0/333333?text=Camera"},
+        {"id": 5, "name": "Teclado", "imageUrl": "https://placehold.co/150x150/E0E0E0/333333?text=Teclado"}
     ]
 
-    # Grid de produtos
-    produtos_html = "".join(
-        [
-            f"""<div style='border:1px solid #ddd; border-radius:8px;
-            padding:16px; margin:8px; background:#fafafa; min-width:150px;'>
-                <strong>{p['nome']}</strong><br>
-                <span>{p['preco']}</span>
-            </div>"""
-            for p in produtos
+    ofertas_data = {
+        1: [
+            {"store": "Livraria Leitura", "price": 40.00, "date": "2025-06-27"},
+            {"store": "Submarino", "price": 58.00, "date": "2025-06-26"},
+            {"store": "Amazon", "price": 45.00, "date": "2025-06-28"}
+        ],
+        2: [
+            {"store": "Magazine Luiza", "price": 1500.00, "date": "2025-06-28"},
+            {"store": "Casas Bahia", "price": 1550.00, "date": "2025-06-27"}
+        ],
+        3: [
+            {"store": "Áudio", "price": 120.00, "date": "2025-06-28"},
+            {"store": "Ponto Frio", "price": 125.00, "date": "2025-06-27"}
+        ],
+        4: [
+            {"store": "Kalunga", "price": 800.00, "date": "2025-06-28"},
+            {"store": "Canon Store", "price": 820.00, "date": "2025-06-27"}
+        ],
+        5: [
+            {"store": "Kabum", "price": 300.00, "date": "2025-06-28"},
+            {"store": "TerabyteShop", "price": 310.00, "date": "2025-06-27"}
         ]
-    )
+    }
 
-    html_content = (
-        f"""<div style="font-family: sans-serif;
-        text-align: center; margin-top: 50px;">"""
-        f"""<h2>Catálogo de Produtos</h2>"""
-        f"""<p>Bem-vindo ao catálogo!</p>"""
-        f"""<div style="margin-bottom: 20px;">"""
-        f"""<input type="text" placeholder="Pesquisar produtos..." """
-        f"""style="width: 300px; padding: 8px; border-radius: 5px;
-        border: 1px solid #ccc;">"""
-        f"""<button style="padding: 8px 16px; border-radius: 5px; border: none;
-        background: #007bff; color: white; cursor: pointer;">Pesquisar</button>"""
-        f"""</div>"""
-        f"""<div style="display: flex; flex-wrap: wrap; gap: 16px;
-        justify-content: center;"""
-        f"""max-height: 300px; overflow-y: auto; border: 1px solid #eee;
-        border-radius: 8px; padding: 16px; background: #fff;">"""
-        f"""{produtos_html}"""
-        f"""</div>"""
-        f"""</div>"""
-    )
+    # Geração dos cards de produtos
+    produtos_cards_html = "".join([
+        f"""
+        <div class="product-card" data-product-id="{produto['id']}">
+            <img src="{produto['imageUrl']}" alt="{produto['name']} Imagem">
+            <h3>{produto['name']}</h3>
+        </div>
+        """ for produto in produtos_data
+    ])
+
+    html_content = f"""
+    <head>
+        <title>Catálogo de Produtos</title>
+        <style>
+            .container {{
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #fff;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+            }}
+            .product-grid {{
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 25px;
+            }}
+            .product-card {{
+                padding: 20px;
+                text-align: center;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Catálogo de Produtos</h1>
+            <p class="welcome">Bem-vindo ao catálogo!</p>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Pesquisar produtos...">
+                <button id="searchButton">Pesquisar</button>
+            </div>
+            <div class="product-grid" id="productGrid">
+                {produtos_cards_html}
+            </div>
+            <div id="offersSection">
+                <h2 id="offersTitle"></h2>
+                <div id="offersList">
+                </div>
+            </div>
+        </div>
+        <script>
+            // Dados simulados 
+            const productsData = {produtos_data};
+            const offersData = {ofertas_data};
+            const offersSection = document.getElementById('offersSection');
+            const offersTitle = document.getElementById('offersTitle');
+            const offersList = document.getElementById('offersList');
+
+            // event listeners nos cards de produto
+            function initializeProductCardListeners() {{
+                const productCards = document.querySelectorAll('.product-card');
+                productCards.forEach(card => {{
+                    card.addEventListener('click', () => {{
+                        const productId = parseInt(card.dataset.productId);
+                        // Apenas pegamos o texto do h3, que é o nome do produto
+                        const productName = card.querySelector('h3').textContent;
+                        showProductOffers(productId, productName);
+                    }});
+                }});
+            }}
+
+            function showProductOffers(productId, productName) {{
+                offersTitle.textContent = `Ofertas para ${{productName}}`;
+                offersList.innerHTML = ''; // Limpa ofertas anteriores
+                const productOffers = offersData[productId];
+
+                productOffers.sort((a, b) => a.price - b.price); // Ordena por preço
+                productOffers.forEach((offer, index) => {{
+                    const offerItem = document.createElement('div');
+                    offerItem.classList.add('offer-item');
+                    offerItem.innerHTML = `
+                        <span class="store-name">${{offer.store}}</span>
+                        <span class="offer-price">R$ ${{offer.price.toFixed(2).replace('.', ',')}}</span>
+                    `;
+                    offersList.appendChild(offerItem);
+                }});
+
+                offersSection.style.display = 'block';
+                offersSection.scrollIntoView({{ behavior: 'smooth' }});
+            }}
+
+            // Inicializa os listeners quando a página carrega
+            document.addEventListener('DOMContentLoaded', initializeProductCardListeners);
+        </script>
+    </body>
+    </html>
+    """
     return render(request, "core/base_html_template.html", {"content": html_content})
