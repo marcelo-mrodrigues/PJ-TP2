@@ -1,7 +1,13 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import (
+    Group,
+    Permission,
+)  # Importar Group e Permission para related_name
 
-# --- Modelos Baseados nas Suas Tabelas DB ---
+
+# --- Modelos Baseados nas Suas Tabelas do Banco de Dados ---
 
 
 class Categoria(models.Model):
@@ -42,6 +48,53 @@ class Marca(models.Model):
         return self.nome
 
 
+class Usuario(AbstractUser):
+    """
+    Representa um usuário do sistema, integrado ao sistema de autenticação do Django.
+    Herda campos como username, password, email, is_staff, is_active, etc.
+    """
+
+    email = models.EmailField(
+        unique=True, blank=False, null=False, verbose_name="Email"
+    )
+
+    role = models.BooleanField(default=False, verbose_name="É Administrador/Gerente")
+
+    USERNAME_FIELD = (
+        "email"  # Define o campo usado para login (email em vez de username padrão)
+    )
+
+    # Campos que serão solicitados ao criar um usuário via createsuperuser
+    # 'username' de AbstractUser é mantido. 'email' já é USERNAME_FIELD.
+    # Agora solicitamos first_name e last_name.
+    REQUIRED_FIELDS = ["username", "first_name", "last_name"]
+
+    # NOVO: Adiciona related_name para evitar conflitos com auth.User
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name="Grupos",
+        blank=True,
+        help_text=(
+            "Os grupos aos quais este usuário pertence. Um usuário obterá "
+            "todas as permissões concedidas a cada um de seus grupos."
+        ),
+        related_name="core_usuario_set",  # Related_name único para Usuario.groups
+        related_query_name="usuario",
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        verbose_name="Permissões de Usuário",  #
+        blank=True,
+        help_text="Permissões específicas para este usuário.",
+        related_name="core_usuario_permissions",  # Related_name único
+        related_query_name="usuario_permission",
+    )
+
+    def __str__(self):
+        full_name = f"{self.first_name} {self.last_name}".strip()
+        return full_name if full_name else self.email
+
+
 class Produto(models.Model):
     """
     Representa um produto disponível no site.
@@ -65,8 +118,9 @@ class Produto(models.Model):
     marca = models.ForeignKey(
         Marca, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Marca"
     )
+    # Referencia o novo modelo Usuario que é o AUTH_USER_MODEL
     adicionado_por = models.ForeignKey(
-        "Usuario",  # Referencia o modelo 'Usuario'
+        "core.Usuario",  # Referencia o modelo 'Usuario' customizado
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -77,25 +131,6 @@ class Produto(models.Model):
     class Meta:
         verbose_name = "Produto"
         verbose_name_plural = "Produtos"
-        ordering = ["nome"]
-
-    def __str__(self):
-        return self.nome
-
-
-class Usuario(models.Model):
-    """
-    Representa um usuário do sistema.
-    """
-
-    id = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=255, verbose_name="Nome do Usuário")
-    email = models.EmailField(max_length=255, unique=True, verbose_name="Email")
-    role = models.BooleanField(default=False, verbose_name="É Administrador/Gerente")
-
-    class Meta:
-        verbose_name = "Usuário"
-        verbose_name_plural = "Usuários"
         ordering = ["nome"]
 
     def __str__(self):
@@ -148,7 +183,7 @@ class Oferta(models.Model):
         ordering = ["-data_captura"]
 
     def __str__(self):
-        # Linha ajustada para E501
+
         return (
             f"Oferta de {self.produto.nome} na {self.loja.nome} " f"por R${self.preco}"
         )
@@ -161,7 +196,7 @@ class ItemComprado(models.Model):
 
     id = models.AutoField(primary_key=True)
     usuario = models.ForeignKey(
-        Usuario, on_delete=models.CASCADE, verbose_name="Usuário"
+        "core.Usuario", on_delete=models.CASCADE, verbose_name="Usuário"
     )
     loja = models.ForeignKey(
         Loja, on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Loja"
@@ -182,9 +217,10 @@ class ItemComprado(models.Model):
         ordering = ["-data_compra"]
 
     def __str__(self):
+
         return (
-            f"Compra de {self.produto.nome if self.produto else 'Produto Desconhecido'}"
-            f"por {self.usuario.nome}"
+            f"Compra de {self.produto.nome if self.produto else 'Produto Desconhecido'} "
+            f"por {self.usuario.first_name if self.usuario.first_name else self.usuario.email}"
         )
 
 
@@ -195,7 +231,7 @@ class ListaCompra(models.Model):
 
     id = models.AutoField(primary_key=True)
     usuario = models.ForeignKey(
-        Usuario, on_delete=models.CASCADE, verbose_name="Usuário"
+        "core.Usuario", on_delete=models.CASCADE, verbose_name="Usuário"
     )
     nome = models.CharField(max_length=255, verbose_name="Nome da Lista")
     criada_em = models.DateTimeField(auto_now_add=True, verbose_name="Criada Em")
@@ -207,7 +243,8 @@ class ListaCompra(models.Model):
         ordering = ["finalizada", "-criada_em"]
 
     def __str__(self):
-        return f"Lista '{self.nome}' de {self.usuario.nome}"
+
+        return f"Lista '{self.nome}' de {self.usuario.first_name if self.usuario.first_name else self.usuario.email}"
 
 
 class ItemLista(models.Model):
@@ -249,7 +286,7 @@ class Comentario(models.Model):
 
     id = models.AutoField(primary_key=True)
     usuario = models.ForeignKey(
-        Usuario, on_delete=models.CASCADE, verbose_name="Usuário"
+        "core.Usuario", on_delete=models.CASCADE, verbose_name="Usuário"
     )
     produto = models.ForeignKey(
         Produto,
@@ -281,9 +318,10 @@ class Comentario(models.Model):
             target += " Loja: " + self.loja.nome
         if not target:
             target = "N/A"
+
         return (
-            f"Comentário de {self.usuario.nome} sobre {target} "
-            f"(Nota: {self.nota if self.nota else 'N/A'})"
+            f"Comentário de {self.usuario.first_name if self.usuario.first_name else self.usuario.email} "
+            f"sobre {target} (Nota: {self.nota if self.nota else 'N/A'})"
         )
 
 
@@ -294,7 +332,7 @@ class ProdutoIndicado(models.Model):
 
     id = models.AutoField(primary_key=True)
     usuario = models.ForeignKey(
-        Usuario, on_delete=models.CASCADE, verbose_name="Usuário Indicador"
+        "core.Usuario", on_delete=models.CASCADE, verbose_name="Usuário Indicador"
     )
     nome_produto = models.CharField(
         max_length=255, verbose_name="Nome do Produto Indicado"
@@ -333,8 +371,9 @@ class ProdutoIndicado(models.Model):
         ordering = ["status", "-data_indicacao"]
 
     def __str__(self):
-        # Linha ajustada para E501
+
         return (
-            f"Indicação de '{self.nome_produto}' por {self.usuario.nome} "
+            f"Indicação de '{self.nome_produto}' por "
+            f"{self.usuario.first_name if self.usuario.first_name else self.usuario.email} "
             f"(Status: {self.status})"
         )

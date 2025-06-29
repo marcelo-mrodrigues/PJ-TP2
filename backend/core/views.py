@@ -286,3 +286,49 @@ def product_catalog_view(request):
     </html>
     """
     return render(request, "core/base_html_template.html", {"content": html_content})
+
+def solicitar_produto_view(request):
+    """
+    Placeholder: Permite que usuários solicitem a adição de um novo produto.
+    """
+    html_content = (
+        """<div style="font-family: sans-serif; text-align: center; """
+        """margin-top: 50px;">"""
+        """<h2>Página de Solicitação de Produto (Em Construção)</h2>"""
+        """<p>Esta é uma página de placeholder para a solicitação de produtos.</p>"""
+        """<a href="/" style="color: #007bff; text-decoration: none;">Voltar para a Home</a>"""
+        """</div>"""
+    )
+    return render(request, "core/base_html_template.html", {"content": html_content})
+
+
+# View para a Tela de Aprovação de Produto (Apenas para administradores)
+def aprovar_produto_view(request):
+    """
+    Placeholder: Exibe uma lista de produtos indicados pendentes para aprovação/rejeição.
+    """
+    html_content = (
+        """<div style="font-family: sans-serif; text-align: center; """
+        """margin-top: 50px;">"""
+        """<h2>Página de Aprovação de Produto (Em Construção)</h2>"""
+        """<p>Esta é uma página de placeholder para aprovação de produtos.</p>"""
+        """<a href="/" style="color: #007bff; text-decoration: none;">Voltar para a Home</a>"""
+        """</div>"""
+    )
+    return render(request, "core/base_html_template.html", {"content": html_content})
+
+
+# View para a Tela de Resultado de Busca
+def buscar_produtos_view(request):
+    """
+    Placeholder: Realiza uma busca de produtos com base em um termo e exibe os resultados.
+    """
+    html_content = (
+        """<div style="font-family: sans-serif; text-align: center; """
+        """margin-top: 50px;">"""
+        """<h2>Página de Busca de Produtos (Em Construção)</h2>"""
+        """<p>Esta é uma página de placeholder para resultados de busca.</p>"""
+        """<a href="/" style="color: #007bff; text-decoration: none;">Voltar para a Home</a>"""
+        """</div>"""
+    )
+    return render(request, "core/base_html_template.html", {"content": html_content})

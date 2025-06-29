@@ -10,4 +10,7 @@ urlpatterns = [
     path(
         "product_catalog/", views.product_catalog_view, name="product_catalog"
     ),  # URL para a página one será exibido os produtos
+    path("solicitar-produto/", views.solicitar_produto_view, name="solicitar_produto"),
+    path("aprovar-produto/", views.aprovar_produto_view, name="aprovar_produto"),
+    path("buscar/", views.buscar_produtos_view, name="buscar_produtos"),
 ]
