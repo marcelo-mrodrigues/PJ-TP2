@@ -60,16 +60,15 @@ class Usuario(AbstractUser):
 
     role = models.BooleanField(default=False, verbose_name="É Administrador/Gerente")
 
-    USERNAME_FIELD = (
-        "email"  # Define o campo usado para login (email em vez de username padrão)
-    )
+    # MUDANÇA AQUI: Define o campo usado para login como 'username'
+    USERNAME_FIELD = 'username'
 
     # Campos que serão solicitados ao criar um usuário via createsuperuser
-    # 'username' de AbstractUser é mantido. 'email' já é USERNAME_FIELD.
-    # Agora solicitamos first_name e last_name.
-    REQUIRED_FIELDS = ["username", "first_name", "last_name"]
+    # 'username' é o USERNAME_FIELD, então ele já é incluído.
+    # 'email' é adicionado aqui para ser obrigatório no createsuperuser.
+    REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
 
-    # NOVO: Adiciona related_name para evitar conflitos com auth.User
+    # Adiciona related_name para evitar conflitos com auth.User
     groups = models.ManyToManyField(
         Group,
         verbose_name="Grupos",
@@ -78,21 +77,21 @@ class Usuario(AbstractUser):
             "Os grupos aos quais este usuário pertence. Um usuário obterá "
             "todas as permissões concedidas a cada um de seus grupos."
         ),
-        related_name="core_usuario_set",  # Related_name único para Usuario.groups
+        related_name="core_usuario_set",  # Nome relacionado único para Usuario.groups
         related_query_name="usuario",
     )
     user_permissions = models.ManyToManyField(
         Permission,
-        verbose_name="Permissões de Usuário",  #
+        verbose_name="Permissões de Usuário",
         blank=True,
         help_text="Permissões específicas para este usuário.",
-        related_name="core_usuario_permissions",  # Related_name único
+        related_name="core_usuario_permissions",  # Nome relacionado único
         related_query_name="usuario_permission",
     )
 
     def __str__(self):
         full_name = f"{self.first_name} {self.last_name}".strip()
-        return full_name if full_name else self.email
+        return full_name if full_name else self.username # USAR username se first_name/last_name vazios
 
 
 class Produto(models.Model):

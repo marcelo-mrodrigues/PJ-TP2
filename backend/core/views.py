@@ -1,10 +1,19 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib import messages
 from django.middleware.csrf import get_token
+from django.db.models import Q # Importado Q novamente
 
-# Removido import de logout (F401) e Usuario (F401) pois não são usados diretamente aqui
+
+
+from .models import ProdutoIndicado, Produto
+
+from .forms import CustomUserCreationForm
+from .forms import CustomAuthenticationForm
+
+Usuario = get_user_model()
+
 # Se precisar de logout no futuro, adicione de volta.
 # Se precisar do modelo Usuario, garanta que seja usado.
 
@@ -15,7 +24,7 @@ def home_view(request):
     Renderiza a página inicial.
     Por enquanto, contém botões para Registro e Login.
     """
-    # Linhas de html_content divididas para E501
+
     html_content = (
         """<div style="font-family: sans-serif; text-align: center; """
         """margin-top: 50px;">"""
@@ -37,13 +46,13 @@ def home_view(request):
 # View para Registro de Usuário (agora usando UserCreationForm)
 def register_view(request):
     """
-    Permite que novos usuários se registrem usando o formulário padrão do Django.
-    Cria um usuário no modelo django.contrib.auth.models.User.
+    Permite que novos usuários se registrem usando o formulário customizado.
+    Cria um usuário no modelo core.Usuario.
     """
     if request.method == "POST":
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST) 
         if form.is_valid():
-            user = form.save()  # Salva o usuário. Variável 'user' é usada para msgs.
+            user = form.save()
             messages.success(
                 request,
                 f"Usuário {user.username} registrado com sucesso! "
@@ -55,27 +64,23 @@ def register_view(request):
                 for error in errors:
                     messages.error(request, f"{field.capitalize()}: {error}")
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm() 
 
     csrf_token_value = get_token(request)
 
-    # NOVO: Gera o HTML das mensagens separadamente para evitar linhas longas
     messages_html = ""
     if messages.get_messages(request):
-        messages_html = "".join(
-            [
-                f'<p style="color:red;">{msg}</p>'
-                for msg in messages.get_messages(request)
-            ]
-        )
+        messages_html = "".join([
+            f'<p style="color:red;">{msg}</p>'
+            for msg in messages.get_messages(request)
+        ])
 
-    # Linhas longas de f-string divididas para E501
     html_content = (
         f"""<div style="font-family: sans-serif; text-align: center; """
         f"""margin-top: 50px;">"""
         f"""<h2>Registro</h2>"""
         f"""<form method="post" action="">"""
-        f"""{messages_html}"""  # Usa a variável gerada
+        f"""{messages_html}"""
         f"""{form.as_p()}"""
         f"""<input type="hidden" name="csrfmiddlewaretoken" """
         f"""value="{csrf_token_value}">"""
@@ -91,53 +96,50 @@ def register_view(request):
     return render(request, "core/base_html_template.html", {"content": html_content})
 
 
-# View para Login de Usuário (agora usando AuthenticationForm)
+
+# View para Login de Usuário (agora usando CustomAuthenticationForm)
 def login_view(request):
     """
-    Permite que usuários existentes façam login usando o formulário padrão do Django.
-    Autentica o usuário e inicia a sessão.
+    Permite que usuários existentes façam login usando o formulário customizado.
+    Autentica o usuário e inicia a sessão, permitindo login apenas por nome de usuário.
     """
     if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
+        form = CustomAuthenticationForm(request, data=request.POST)
+        # --- INÍCIO: LINHAS TEMPORÁRIAS PARA DEPURAR O LOGIN ---
+        print(f"\n--- DEPURANDO LOGIN ---")
+        print(f"Dados do formulário recebidos: {request.POST}")
+        print(f"Formulário é válido? {form.is_valid()}")
+        if not form.is_valid():
+            print(f"Erros do formulário: {form.errors.as_data()}")
+        # --- FIM: LINHAS TEMPORÁRIAS PARA DEPURAR ---
+
         if form.is_valid():
-            username = form.cleaned_data["username"]
-            password = form.cleaned_data["password"]
-
-            user = authenticate(request, username=username, password=password)
-
-            if user is not None:
-                login(request, user)
-                messages.success(request, "Login realizado com sucesso!")
-                return redirect("product_catalog")
-            else:
-                messages.error(request, "Nome de usuário ou senha inválidos.")
+            login(request, form.get_user())
+            messages.success(request, "Login realizado com sucesso!")
+            return redirect("home")
         else:
             for field, errors in form.errors.items():
                 for error in errors:
                     messages.error(request, f"{field.capitalize()}: {error}")
             messages.error(request, "Por favor, corrija os erros abaixo.")
     else:
-        form = AuthenticationForm()
+        form = CustomAuthenticationForm()
 
     csrf_token_value = get_token(request)
 
-    # NOVO: Gera o HTML das mensagens separadamente para evitar linhas longas
     messages_html = ""
     if messages.get_messages(request):
-        messages_html = "".join(
-            [
-                f'<p style="color:red;">{msg}</p>'
-                for msg in messages.get_messages(request)
-            ]
-        )
+        messages_html = "".join([
+            f'<p style="color:red;">{msg}</p>'
+            for msg in messages.get_messages(request)
+        ])
 
-    # Linhas longas de f-string divididas para E501
     html_content = (
         f"""<div style="font-family: sans-serif; text-align: center; """
         f"""margin-top: 50px;">"""
         f"""<h2>Login</h2>"""
         f"""<form method="post" action="">"""
-        f"""{messages_html}"""  # Usa a variável gerada
+        f"""{messages_html}"""
         f"""{form.as_p()}"""
         f"""<input type="hidden" name="csrfmiddlewaretoken" """
         f"""value="{csrf_token_value}">"""
