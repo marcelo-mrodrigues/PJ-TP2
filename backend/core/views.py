@@ -289,6 +289,8 @@ def product_catalog_view(request):
     """
     return render(request, "core/base_html_template.html", {"content": html_content})
 
+
+# View para a Tela de Visualização de Solicitações de Produto (Admin)
 def solicitar_produto_view(request):
     """
     Placeholder: Permite que usuários solicitem a adição de um novo produto.
@@ -330,6 +332,102 @@ def buscar_produtos_view(request):
         """margin-top: 50px;">"""
         """<h2>Página de Busca de Produtos (Em Construção)</h2>"""
         """<p>Esta é uma página de placeholder para resultados de busca.</p>"""
+        """<a href="/" style="color: #007bff; text-decoration: none;">Voltar para a Home</a>"""
+        """</div>"""
+    )
+    return render(request, "core/base_html_template.html", {"content": html_content})
+
+
+
+# View para a Tela de Visualização de Solicitações de Produto (Admin)
+def solicitacao_produto_view(request):
+    """
+    Placeholder: Exibe uma lista de solicitações de produtos pendentes.
+    Apenas para administradores.
+    """
+    html_content = (
+        """<div style="font-family: sans-serif; text-align: center; """
+        """margin-top: 50px;">"""
+        """<h2>Página de Visualização de Solicitações de Produto (Em Construção)</h2>"""
+        """<p>Esta é uma página de placeholder para visualização de solicitações de produtos.</p>"""
+        """<a href="/" style="color: #007bff; text-decoration: none;">Voltar para a Home</a>"""
+        """</div>"""
+    )
+    return render(request, "core/base_html_template.html", {"content": html_content})
+
+# View para a Tela de Criação de Produto (Admin)
+def ciar_produto_view(request):
+    """
+    Placeholder: Permite que administradores criem um novo produto.
+    """
+    html_content = (
+        """<div style="font-family: sans-serif; text-align: center; """
+        """margin-top: 50px;">"""
+        """<h2>Página de Criação de Produto (Em Construção)</h2>"""
+        """<p>Esta é uma página de placeholder para criação de produtos.</p>"""
+        """<a href="/" style="color: #007bff; text-decoration: none;">Voltar para a Home</a>"""
+        """</div>"""
+    )
+    return render(request, "core/base_html_template.html", {"content": html_content})
+
+# View para a Tela do Produto (Usuário/Admin)
+def produto_view(request, product_id):
+    """
+    Placeholder: Exibe os detalhes de um produto específico.
+    Permite comentários (usuário) e edição/exclusão (admin).
+    """
+    html_content = (
+        f"""<div style="font-family: sans-serif; text-align: center; """
+        f"""margin-top: 50px;">"""
+        f"""<h2>Detalhes do Produto {product_id} (Em Construção)</h2>"""
+        f"""<p>Esta é uma página de placeholder para os detalhes do produto.</p>"""
+        f"""<p>Aqui o usuário poderá comentar e o admin poderá editar/excluir.</p>"""
+        f"""<a href="/" style="color: #007bff; text-decoration: none;">Voltar para a Home</a>"""
+        f"""</div>"""
+    )
+    return render(request, "core/base_html_template.html", {"content": html_content})
+
+
+# View para a Tela de Perfil (Usuário)
+def perfil_view(request):
+    """
+    Placeholder: Exibe o perfil do usuário logado.
+    """
+    html_content = (
+        """<div style="font-family: sans-serif; text-align: center; """
+        """margin-top: 50px;">"""
+        """<h2>Página de Perfil (Em Construção)</h2>"""
+        """<p>Esta é uma página de placeholder para o perfil do usuário.</p>"""
+        """<a href="/" style="color: #007bff; text-decoration: none;">Voltar para a Home</a>"""
+        """</div>"""
+    )
+    return render(request, "core/base_html_template.html", {"content": html_content})
+
+# View para a Tela de Lista de Compras (Usuário)
+def lista_de_compras_view(request):
+    """
+    Placeholder: Exibe a lista de compras do usuário.
+    """
+    html_content = (
+        """<div style="font-family: sans-serif; text-align: center; """
+        """margin-top: 50px;">"""
+        """<h2>Página de Lista de Compras (Em Construção)</h2>"""
+        """<p>Esta é uma página de placeholder para a lista de compras do usuário.</p>"""
+        """<a href="/" style="color: #007bff; text-decoration: none;">Voltar para a Home</a>"""
+        """</div>"""
+    )
+    return render(request, "core/base_html_template.html", {"content": html_content})
+
+# View para a Tela de Histórico de Compras (Usuário)
+def historico_view(request):
+    """
+    Placeholder: Exibe o histórico de compras do usuário.
+    """
+    html_content = (
+        """<div style="font-family: sans-serif; text-align: center; """
+        """margin-top: 50px;">"""
+        """<h2>Página de Histórico de Compras (Em Construção)</h2>"""
+        """<p>Esta é uma página de placeholder para o histórico de compras do usuário.</p>"""
         """<a href="/" style="color: #007bff; text-decoration: none;">Voltar para a Home</a>"""
         """</div>"""
     )

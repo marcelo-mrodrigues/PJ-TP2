@@ -13,4 +13,10 @@ urlpatterns = [
     path("solicitar-produto/", views.solicitar_produto_view, name="solicitar_produto"),
     path("aprovar-produto/", views.aprovar_produto_view, name="aprovar_produto"),
     path("buscar/", views.buscar_produtos_view, name="buscar_produtos"),
+    path("solicitacoes-produto/", views.solicitacao_produto_view, name="ver_solicitacao_produtos"),
+    path("criar-produto/", views.ciar_produto_view, name="criar_produto"),
+    path("produto/<int:product_id>/", views.produto_view, name="produto"),
+    path("perfil/", views.perfil_view, name="perfil"),
+    path("lista-compras/", views.lista_de_compras_view, name="lista_de_compras"),
+    path("historico-compras/", views.historico_view, name="historico"),
 ]
