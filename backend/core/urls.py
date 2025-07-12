@@ -19,4 +19,7 @@ urlpatterns = [
     path("perfil/", views.perfil_view, name="perfil"),
     path("lista-compras/", views.lista_de_compras_view, name="lista_de_compras"),
     path("historico-compras/", views.historico_view, name="historico"),
+    path("catalago_produtos/", views.product_catalog_view2, name="catalogo"),
+    path("criar-loja/", views.create_loja_view, name="create_loja"), # Nova URL para loja
+    path("criar-oferta/", views.create_oferta_view, name="create_oferta"), # Nova URL para oferta
 ]
