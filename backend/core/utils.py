@@ -1,4 +1,10 @@
+# core/utils.py
+
 from .models import Produto, Oferta, Loja, Categoria, Marca # Importar os modelos
+from django.db.models import Q
+from django.db.models import Min # Importe Min para agregação
+# Removidos: get_token, messages (não são puramente lógicas de negócio)
+
 
 def get_product_info(product_id):
     """
@@ -34,8 +40,6 @@ def search_products(query):
     Busca produtos com base em um termo de consulta, usando o ORM do Django.
     Também calcula o menor preço para cada produto encontrado.
     """
-    from django.db.models import Min # Importe Min para agregação
-
     if not query:
         # Retorna todos os produtos com seu menor preço
         products = Produto.objects.annotate(

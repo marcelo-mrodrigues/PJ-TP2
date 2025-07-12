@@ -61,16 +61,12 @@ class CustomAuthenticationForm(AuthenticationForm):
     
 
 class ProdutoForm(forms.ModelForm):
-    """
-    Formulário para adicionar ou editar um Produto.
-    Utiliza ModelForm para gerar campos automaticamente a partir do modelo Produto.
-    """
+    # Adicionar campo oculto para o ID ao editar
+    product_id_hidden = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+
     class Meta:
         model = Produto
-        # Campos que você quer incluir no formulário.
-        # 'adicionado_por' será preenchido automaticamente na view.
         fields = ['nome', 'descricao', 'imagem_url', 'categoria', 'marca']
-        # Labels personalizados para melhor apresentação no front-end
         labels = {
             'nome': 'Nome do Produto',
             'descricao': 'Descrição',
@@ -78,34 +74,34 @@ class ProdutoForm(forms.ModelForm):
             'categoria': 'Categoria',
             'marca': 'Marca',
         }
-        # Widgets personalizados para controle de input (opcional, para melhor UX)
         widgets = {
-            'descricao': forms.Textarea(attrs={'rows': 4}), # Torna a descrição uma textarea maior
+            'descricao': forms.Textarea(attrs={'rows': 4}),
             'imagem_url': forms.URLInput(attrs={'placeholder': 'Ex: http://example.com/imagem.jpg'}),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Opcional: Adiciona classes CSS para estilização (ex: Bootstrap)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
         
-        # Opcional: Torna Categoria e Marca dropdowns com opções reais do banco
         self.fields['categoria'].queryset = Categoria.objects.all().order_by('nome')
         self.fields['marca'].queryset = Marca.objects.all().order_by('nome')
         
-        # Opcional: Adiciona uma opção "--------" para campos ForeignKey vazios
         self.fields['categoria'].empty_label = "Selecione uma categoria"
         self.fields['marca'].empty_label = "Selecione uma marca"
 
+        # Preencher o campo oculto se a instância já existir (modo edição)
+        if self.instance and self.instance.pk:
+            self.fields['product_id_hidden'].initial = self.instance.pk
+
 
 class LojaForm(forms.ModelForm):
-    """
-    Formulário para adicionar ou editar uma Loja.
-    """
+    store_id_hidden = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+
     class Meta:
         model = Loja
-        fields = ['nome', 'url', 'logo_url']
+        # === VERIFIQUE ESTA LINHA: store_id_hidden DEVE ESTAR AQUI ===
+        fields = ['nome', 'url', 'logo_url', 'store_id_hidden'] # <-- Adicione aqui!
         labels = {
             'nome': 'Nome da Loja',
             'url': 'URL da Loja',
@@ -120,15 +116,17 @@ class LojaForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+        
+        if self.instance and self.instance.pk:
+            self.fields['store_id_hidden'].initial = self.instance.pk
 
 
 class OfertaForm(forms.ModelForm):
-    """
-    Formulário para adicionar ou editar uma Oferta.
-    """
+    # Adicionar campo oculto para o ID ao editar
+    offer_id_hidden = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+
     class Meta:
         model = Oferta
-        # Não inclua 'data_captura' pois ela é auto_now_add=True no modelo.
         fields = ['produto', 'loja', 'preco']
         labels = {
             'produto': 'Produto',
@@ -136,7 +134,7 @@ class OfertaForm(forms.ModelForm):
             'preco': 'Preço',
         }
         widgets = {
-            'preco': forms.NumberInput(attrs={'step': '0.01', 'min': '0.01'}), # Permite centavos e mínimo 0.01
+            'preco': forms.NumberInput(attrs={'step': '0.01', 'min': '0.01'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -144,9 +142,21 @@ class OfertaForm(forms.ModelForm):
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
         
-        # Opcional: Popula os dropdowns com opções reais do banco
         self.fields['produto'].queryset = Produto.objects.all().order_by('nome')
         self.fields['loja'].queryset = Loja.objects.all().order_by('nome')
 
         self.fields['produto'].empty_label = "Selecione um produto"
         self.fields['loja'].empty_label = "Selecione uma loja"
+
+        if self.instance and self.instance.pk:
+            self.fields['offer_id_hidden'].initial = self.instance.pk
+
+# Novo Formulário de Categoria (se ainda não tiver)
+class CategoriaForm(forms.ModelForm):
+    class Meta:
+        model = Categoria
+        fields = ['nome']
+        labels = {'nome': 'Nome da Categoria'}
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['nome'].widget.attrs['class'] = 'form-control'

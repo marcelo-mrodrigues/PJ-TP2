@@ -14,12 +14,14 @@ urlpatterns = [
     path("aprovar-produto/", views.aprovar_produto_view, name="aprovar_produto"),
     path("buscar/", views.buscar_produtos_view, name="buscar_produtos"),
     path("solicitacoes-produto/", views.solicitacao_produto_view, name="ver_solicitacao_produtos"),
-    path("criar-produto/", views.ciar_produto_view, name="criar_produto"),
     path("produto/<int:product_id>/", views.produto_view, name="produto"),
     path("perfil/", views.perfil_view, name="perfil"),
     path("lista-compras/", views.lista_de_compras_view, name="lista_de_compras"),
     path("historico-compras/", views.historico_view, name="historico"),
-    path("catalago_produtos/", views.product_catalog_view2, name="catalogo"),
-    path("criar-loja/", views.create_loja_view, name="create_loja"), # Nova URL para loja
-    path("criar-oferta/", views.create_oferta_view, name="create_oferta"), # Nova URL para oferta
+    path("catalago_produtos/", views.product_catalog_view2, name="catalogo"), #pra teste
+    # URLs de Gerenciamento (Create/Edit/Delete em uma única view)
+    path("gerenciar-lojas/", views.manage_stores_view, name="manage_stores"),
+    path("gerenciar-produtos/", views.manage_products_view, name="manage_products"),
+    path("gerenciar-ofertas/", views.manage_offers_view, name="manage_offers"),
+
 ]
