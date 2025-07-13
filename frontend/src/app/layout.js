@@ -1,7 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import '../styles/style.css'; 
+import '../styles/style.css'; // Seu CSS customizado
+import 'bootstrap/dist/css/bootstrap.min.css'; // <--- IMPORTAÇÃO DO CSS DO BOOTSTRAP AQUI
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import BootstrapClient from '../components/BootstrapClient'; // <--- IMPORTAR O NOVO COMPONENTE
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +34,7 @@ export default function RootLayout({ children }) {
         </main>
         
         <Footer />
+        <BootstrapClient /> {/* <--- ADICIONE ESTE COMPONENTE AQUI, GERALMENTE ANTES DO FECHAMENTO DO </body> */}
       </body>
     </html>
   );
