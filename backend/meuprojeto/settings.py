@@ -39,7 +39,7 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(",")
 
-AUTH_USER_MODEL = 'core.Usuario'
+AUTH_USER_MODEL = "core.Usuario"
 
 
 # Application definition
@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # adicionar  'corsheaders', com o comando
+    # pip install djangorestframework django-cors-headers
     "core",
 ]
 
