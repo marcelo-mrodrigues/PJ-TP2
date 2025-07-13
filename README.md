@@ -141,7 +141,11 @@ Utilize o comando make test para rodar os testes.
 make test
 ```
 com esses comandos você pode executar os testes, e criar um report, com esse reporte você pode acessar um HTML que te mostra que linhas testou ou não.
+
+
 ```
+cd backend/
+source venv/bin/activate
 coverage run manage.py test core
 coverage report
 coverage html
