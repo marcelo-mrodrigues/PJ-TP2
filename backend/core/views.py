@@ -8,10 +8,11 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.urls import reverse
+from django.http import JsonResponse
 
 from .utils import get_product_info, search_products
 from .models import ProdutoIndicado, Produto, Oferta, Categoria, Marca, Loja
-
+from .utils import search_products
 from .forms import CustomUserCreationForm
 from .forms import CustomAuthenticationForm
 from .forms import ProdutoForm
@@ -222,140 +223,31 @@ def login_view(request):
     )
     return render(request, "core/base_html_template.html", {"content": html_content})
 
-def product_catalog_view(request):
+def product_catalog_view(request): # MANTÉM O NOME ORIGINAL
     """
-    Exibe o catálogo de produtos com dados fixos. Só para teste.
+    Retorna os dados do catálogo de produtos em formato JSON.
+    Permite busca por query param 'q'.
     """
-    produtos_data = [
-        {"id": 1, "name": "Livro", "imageUrl": "https://placehold.co/150x150/E0E0E0/333333?text=Livro"},
-        {"id": 2, "name": "Smartphone", "imageUrl": "https://placehold.co/150x150/E0E0E0/333333?text=Phone"},
-        {"id": 3, "name": "Fone de Ouvido", "imageUrl": "https://placehold.co/150x150/E0E0E0/333333?text=Fone"},
-        {"id": 4, "name": "Câmera", "imageUrl": "https://placehold.co/150x150/E0E0E0/333333?text=Camera"},
-        {"id": 5, "name": "Teclado", "imageUrl": "https://placehold.co/150x150/E0E0E0/333333?text=Teclado"}
-    ]
+    search_query = request.GET.get('q', '') # Pega o parâmetro 'q' da URL
+    produtos_data = search_products(search_query) # Usa a função de utilitário do utils.py
 
-    ofertas_data = {
-        1: [
-            {"store": "Livraria Leitura", "price": 40.00, "date": "2025-06-27"},
-            {"store": "Submarino", "price": 58.00, "date": "2025-06-26"},
-            {"store": "Amazon", "price": 45.00, "date": "2025-06-28"}
-        ],
-        2: [
-            {"store": "Magazine Luiza", "price": 1500.00, "date": "2025-06-28"},
-            {"store": "Casas Bahia", "price": 1550.00, "date": "2025-06-27"}
-        ],
-        3: [
-            {"store": "Áudio", "price": 120.00, "date": "2025-06-28"},
-            {"store": "Ponto Frio", "price": 125.00, "date": "2025-06-27"}
-        ],
-        4: [
-            {"store": "Kalunga", "price": 800.00, "date": "2025-06-28"},
-            {"store": "Canon Store", "price": 820.00, "date": "2025-06-27"}
-        ],
-        5: [
-            {"store": "Kabum", "price": 300.00, "date": "2025-06-28"},
-            {"store": "TerabyteShop", "price": 310.00, "date": "2025-06-27"}
-        ]
-    }
+    # Retorna os dados em formato JSON
+    return JsonResponse({"products": produtos_data})
 
-    # Geração dos cards de produtos
-    produtos_cards_html = "".join([
-        f"""
-        <div class="product-card" data-product-id="{produto['id']}">
-            <img src="{produto['imageUrl']}" alt="{produto['name']} Imagem">
-            <h3>{produto['name']}</h3>
-        </div>
-        """ for produto in produtos_data
-    ])
 
-    html_content = f"""
-    <head>
-        <title>Catálogo de Produtos</title>
-        <style>
-            .container {{
-                max-width: 1200px;
-                margin: 0 auto;
-                padding: 20px;
-                background-color: #fff;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                border-radius: 8px;
-            }}
-            .product-grid {{
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                gap: 25px;
-            }}
-            .product-card {{
-                padding: 20px;
-                text-align: center;
-            }}
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>Catálogo de Produtos</h1>
-            <p class="welcome">Bem-vindo ao catálogo!</p>
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Pesquisar produtos...">
-                <button id="searchButton">Pesquisar</button>
-            </div>
-            <div class="product-grid" id="productGrid">
-                {produtos_cards_html}
-            </div>
-            <div id="offersSection">
-                <h2 id="offersTitle"></h2>
-                <div id="offersList">
-                </div>
-            </div>
-        </div>
-        <script>
-            // Dados simulados 
-            const productsData = {produtos_data};
-            const offersData = {ofertas_data};
-            const offersSection = document.getElementById('offersSection');
-            const offersTitle = document.getElementById('offersTitle');
-            const offersList = document.getElementById('offersList');
-
-            // event listeners nos cards de produto
-            function initializeProductCardListeners() {{
-                const productCards = document.querySelectorAll('.product-card');
-                productCards.forEach(card => {{
-                    card.addEventListener('click', () => {{
-                        const productId = parseInt(card.dataset.productId);
-                        // Apenas pegamos o texto do h3, que é o nome do produto
-                        const productName = card.querySelector('h3').textContent;
-                        showProductOffers(productId, productName);
-                    }});
-                }});
-            }}
-
-            function showProductOffers(productId, productName) {{
-                offersTitle.textContent = `Ofertas para ${{productName}}`;
-                offersList.innerHTML = ''; // Limpa ofertas anteriores
-                const productOffers = offersData[productId];
-
-                productOffers.sort((a, b) => a.price - b.price); // Ordena por preço
-                productOffers.forEach((offer, index) => {{
-                    const offerItem = document.createElement('div');
-                    offerItem.classList.add('offer-item');
-                    offerItem.innerHTML = `
-                        <span class="store-name">${{offer.store}}</span>
-                        <span class="offer-price">R$ ${{offer.price.toFixed(2).replace('.', ',')}}</span>
-                    `;
-                    offersList.appendChild(offerItem);
-                }});
-
-                offersSection.style.display = 'block';
-                offersSection.scrollIntoView({{ behavior: 'smooth' }});
-            }}
-
-            // Inicializa os listeners quando a página carrega
-            document.addEventListener('DOMContentLoaded', initializeProductCardListeners);
-        </script>
-    </body>
-    </html>
+# === A NOVA product_detail_view QUE RETORNA JSON ===
+def product_detail_view(request, product_id): # MANTÉM O NOME ORIGINAL
     """
-    return render(request, "core/base_html_template.html", {"content": html_content})
+    Retorna os detalhes de um produto específico em formato JSON,
+    usando a função get_product_info do utils.
+    """
+    product = get_product_info(product_id) # Esta função vem do utils
+
+    if not product:
+        return JsonResponse({"error": "Produto não encontrado"}, status=404)
+    
+    # Retorna os dados do produto (já incluindo ofertas e menor preço)
+    return JsonResponse({"product": product})
 
 def product_catalog_view2(request): #pra teste
     """
