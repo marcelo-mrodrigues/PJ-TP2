@@ -58,7 +58,6 @@ class Usuario(AbstractUser):
         unique=True, blank=False, null=False, verbose_name="Email"
     )
 
-    role = models.BooleanField(default=False, verbose_name="É Administrador/Gerente")
 
     # MUDANÇA AQUI: Define o campo usado para login como 'username'
     USERNAME_FIELD = 'username'

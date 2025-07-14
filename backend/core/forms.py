@@ -8,13 +8,16 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = Usuario
         fields = UserCreationForm.Meta.fields + (
-            'first_name', 'last_name', 'email', 'role', 
+            'first_name', 'last_name', 'email',
         )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if 'email' in self.fields:
-            self.fields['email'].required = True # Garante que o email é obrigatório no form
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            if field_name == 'email':
+                field.required = True
 
 class CustomAuthenticationForm(AuthenticationForm):
     """

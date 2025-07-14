@@ -1,0 +1,89 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Detalhes do Produto{% endblock %}
+
+{% block main_content %}
+<div class="container mt-5" id="product-detail">
+
+    {# ESSE SCRIPT CONTÉM O ID DO PRODUTO USADO NO JAVASCRIPT #}
+    {{ product_id|json_script:"product-id-data" }}
+
+    <div class="row">
+        <div class="col-md-6">
+            <img id="product-image" src="" alt="Imagem do produto" class="img-fluid rounded shadow">
+        </div>
+        <div class="col-md-6">
+            <h2 id="product-name" class="mb-3"></h2>
+            <p id="product-description" class="text-muted"></p>
+
+            <ul class="list-group mb-3">
+                <li class="list-group-item"><strong>Categoria:</strong> <span id="product-category"></span></li>
+                <li class="list-group-item"><strong>Marca:</strong> <span id="product-brand"></span></li>
+                <li class="list-group-item"><strong>Menor Preço:</strong> R$ <span id="product-price"></span></li>
+            </ul>
+
+            <h5 class="mt-4">Ofertas Disponíveis</h5>
+            <ul id="offers-list" class="list-group"></ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // PEGANDO O ID DO PRODUTO DO TEMPLATE
+        const productId = JSON.parse(
+            document.getElementById("product-id-data").textContent
+        );
+
+        // MONTANDO A URL DA API USANDO ESSE ID
+        const endpoint = `/api/produto-dados/${productId}/`;
+
+        fetch(endpoint)
+            .then(response => {
+                if (!response.ok) throw new Error("Produto não encontrado");
+                return response.json();
+            })
+            .then(data => {
+                const product = data.product;
+
+                document.getElementById("product-image").src = product.imageUrl;
+                document.getElementById("product-name").textContent = product.name;
+                document.getElementById("product-description").textContent = product.description;
+                document.getElementById("product-category").textContent = product.category || "-";
+                document.getElementById("product-brand").textContent = product.brand || "-";
+                document.getElementById("product-price").textContent =
+                    (product.min_price !== null && product.min_price !== undefined)
+                        ? product.min_price.toFixed(2).replace('.', ',')
+                        : "Indisponível";
+
+                const offersList = document.getElementById("offers-list");
+                offersList.innerHTML = ""; // Limpa qualquer conteúdo anterior
+
+                if (product.offers && product.offers.length > 0) {
+                    product.offers.forEach(offer => {
+                        const li = document.createElement("li");
+                        li.className = "list-group-item d-flex justify-content-between align-items-center";
+                        li.innerHTML = `<strong>${offer.store}</strong> <span>R$ ${offer.price.toFixed(2).replace('.', ',')}</span>`;
+                        offersList.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement("li");
+                    li.className = "list-group-item";
+                    li.textContent = "Nenhuma oferta disponível.";
+                    offersList.appendChild(li);
+                }
+            })
+            .catch(error => {
+                console.error("Erro ao carregar produto:", error);
+                document.getElementById("product-detail").innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        ${error.message}<br>
+                        Verifique se o produto existe ou se há problema com o backend.
+                    </div>`;
+            });
+    });
+</script>
+{% endblock %}

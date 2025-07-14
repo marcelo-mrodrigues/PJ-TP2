@@ -1,0 +1,82 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block main_content %}
+<section class="py-5 overflow-hidden">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="section-header d-flex flex-wrap justify-content-between mb-5">
+          <h2 class="section-title">Categorias</h2>
+
+          <div class="d-flex align-items-center">
+            <a href="#" class="btn-link text-decoration-none">Ver todas →</a>
+            <div class="swiper-buttons ms-3">
+              <button class="swiper-prev category-carousel-prev btn btn-yellow me-1">❮</button>
+              <button class="swiper-next category-carousel-next btn btn-yellow">❯</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="category-carousel swiper">
+          <div class="swiper-wrapper">
+            {% comment %} Substitua pelos dados reais do backend futuramente {% endcomment %}
+            <a href="#" class="nav-link category-item swiper-slide">
+              <img src="{% static 'images/icon-vegetables-broccoli.png' %}" alt="Categoria">
+              <h3 class="category-title">Frutas e Verduras</h3>
+            </a>
+            <a href="#" class="nav-link category-item swiper-slide">
+              <img src="{% static 'images/icon-bread-baguette.png' %}" alt="Categoria">
+              <h3 class="category-title">Pães e Doces</h3>
+            </a>
+            <a href="#" class="nav-link category-item swiper-slide">
+              <img src="{% static 'images/icon-soft-drinks-bottle.png' %}" alt="Categoria">
+              <h3 class="category-title">Refrigerantes</h3>
+            </a>
+            <a href="#" class="nav-link category-item swiper-slide">
+              <img src="{% static 'images/icon-wine-glass-bottle.png' %}" alt="Categoria">
+              <h3 class="category-title">Bebidas</h3>
+            </a>
+            <a href="#" class="nav-link category-item swiper-slide">
+              <img src="{% static 'images/icon-animal-products-drumsticks.png' %}" alt="Categoria">
+              <h3 class="category-title">Carnes</h3>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Inclua o Swiper.js se ainda não estiver no base.html -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    new Swiper('.category-carousel', {
+      slidesPerView: 4,
+      spaceBetween: 30,
+      navigation: {
+        nextEl: '.category-carousel-next',
+        prevEl: '.category-carousel-prev',
+      },
+      breakpoints: {
+        768: { slidesPerView: 3 },
+        992: { slidesPerView: 4 },
+        1200: { slidesPerView: 5 },
+      },
+    });
+  });
+</script>
+{% endblock %}
