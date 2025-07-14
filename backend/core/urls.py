@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from core.api import api_views
+from core.api.api_views import csrf
 
 urlpatterns = [
     path("", views.home_view, name="home"),  # URL para a página inicial
@@ -30,5 +31,8 @@ urlpatterns = [
     path("gerenciar-lojas/", views.manage_stores_view, name="manage_stores"),
     path("gerenciar-produtos/", views.manage_products_view, name="manage_products"),
     path("gerenciar-ofertas/", views.manage_offers_view, name="manage_offers"),
+    # API Endpoints
     path("api/v1/register", api_views.RegisterAPIView.as_view(), name="api-register"),
+    path("api/v1/login", api_views.LoginAPIView.as_view(), name="api-login"),
+    path("api/v1/csrf", csrf, name="api-csrf"),
 ]

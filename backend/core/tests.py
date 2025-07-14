@@ -772,3 +772,53 @@ class TestRegisterAPIView:
         assert "email" in response.data["errors"]
         assert "password1" in response.data["errors"]
         assert "password2" in response.data["errors"]
+
+
+@pytest.mark.django_db
+class TestLoginAPIView:
+    @pytest.fixture
+    def client(self):
+        return APIClient()
+
+    @pytest.fixture
+    def user(self):
+        # Create a test user with known credentials
+        return Usuario.objects.create_user(
+            username="testuser",
+            email="testuser@example.com",
+            password="TestPassword123",
+        )
+
+    def test_login_success(self, client, user):
+        url = reverse("api-login")
+        payload = {
+            "username": "testuser",
+            "password": "TestPassword123",
+        }
+        response = client.post(url, data=payload)
+
+        assert response.status_code == 200
+        assert response.data["detail"] == "Login realizado com sucesso!"
+
+    def test_login_fail_wrong_password(self, client, user):
+        url = reverse("api-login")
+        payload = {
+            "username": "testuser",
+            "password": "WrongPassword",
+        }
+        response = client.post(url, data=payload)
+
+        assert response.status_code == 400
+        assert "errors" in response.data
+        assert "__all__" in response.data["errors"]
+
+    def test_login_fail_unknown_user(self, client):
+        url = reverse("api-login")
+        payload = {
+            "username": "unknownuser",
+            "password": "anyPassword",
+        }
+        response = client.post(url, data=payload)
+
+        assert response.status_code == 400
+        assert "errors" in response.data
