@@ -8,6 +8,7 @@ from django.urls import reverse
 from django.db import IntegrityError  # Importe para testar unique_together
 import decimal  # Para lidar com valores DecimalFields
 import pytest
+import uuid
 from rest_framework.test import APIClient
 
 
@@ -822,3 +823,39 @@ class TestLoginAPIView:
 
         assert response.status_code == 400
         assert "errors" in response.data
+
+
+@pytest.mark.django_db
+class TestCurrentUserAPIView:
+    @pytest.fixture
+    def client(self):
+        return APIClient()
+
+    @pytest.fixture
+    def user(self):
+        return Usuario.objects.create_user(
+            username="testuser",
+            email="testuser@example.com",
+            password="TestPassword123",
+            first_name="Test",
+            last_name="User",
+            public_id=uuid.uuid4(),
+        )
+
+    def test_authenticated_user_can_get_info(self, client, user):
+        client.login(username="testuser", password="TestPassword123")
+        url = reverse("api-user-info")
+        response = client.get(url)
+
+        assert response.status_code == 200
+        assert response.data["username"] == "testuser"
+        assert response.data["email"] == "testuser@example.com"
+        assert response.data["first-name"] == "Test"
+        assert response.data["last-name"] == "User"
+        assert response.data["public_id"] == user.public_id
+
+    def test_unauthenticated_user_is_denied(self, client):
+        url = reverse("api-user-info")
+        response = client.get(url)
+
+        assert response.status_code in [401, 403]  # Unauthorized

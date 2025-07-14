@@ -6,6 +6,7 @@ from core.forms import CustomAuthenticationForm
 from django.contrib.auth import login
 from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
+from rest_framework.permissions import IsAuthenticated
 
 
 class RegisterAPIView(APIView):
@@ -48,6 +49,22 @@ class LoginAPIView(APIView):
         login(request, user)
         return Response(
             {"detail": "Login realizado com sucesso!"}, status=status.HTTP_200_OK
+        )
+
+
+class CurrentUserAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        return Response(
+            {
+                "username": user.username,
+                "email": user.email,
+                "first-name": user.first_name,
+                "last-name": user.last_name,
+                "public_id": getattr(user, "public_id", None),
+            }
         )
 
 

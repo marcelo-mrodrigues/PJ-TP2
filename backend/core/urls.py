@@ -35,4 +35,5 @@ urlpatterns = [
     path("api/v1/register", api_views.RegisterAPIView.as_view(), name="api-register"),
     path("api/v1/login", api_views.LoginAPIView.as_view(), name="api-login"),
     path("api/v1/csrf", csrf, name="api-csrf"),
+    path("api/v1/me", api_views.CurrentUserAPIView.as_view(), name="api-user-info"),
 ]
