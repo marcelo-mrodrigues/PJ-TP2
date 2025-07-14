@@ -5,6 +5,16 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
 
+function getCookie(name) {
+  const cookies = document.cookie.split('; ');
+  for (let cookie of cookies) {
+    if (cookie.startsWith(name + '=')) {
+      return cookie.split('=')[1];
+    }
+  }
+  return null;
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -44,11 +54,25 @@ export default function LoginPage() {
     formData.append('password', password);
 
     try {
-      const response = await fetch('http://localhost:8000/login/', { // URL completa do backend Django
+      await fetch('http://localhost:8000/api/v1/csrf', {
+        credentials: 'include',
+      })
+      const csrfToken = getCookie('csrftoken');
+
+      console.log('post request')
+      const response = await fetch('http://localhost:8000/api/v1/login', { // URL completa do backend Django
         method: 'POST',
+        headers: {
+          'X-CSRFToken': csrfToken,
+        },
         body: formData,
         redirect: 'follow', // Importante para que o fetch siga o redirecionamento do Django
+        credentials: 'include'
       });
+
+      if (response.ok) {
+        router.push('/')
+      }
 
       // Se o Django redirecionar com sucesso, o navegador já estará na página final.
       // Se redirecionar com erros, o Next.js precisará ler os query params ou cookies.
