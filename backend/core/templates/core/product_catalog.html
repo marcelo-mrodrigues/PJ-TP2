@@ -1,0 +1,109 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Catálogo de Produtos - FoodMart{% endblock %}
+
+{% block main_content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="section-header d-flex flex-wrap justify-content-between mb-4">
+                    <h2 class="section-title">Nosso Catálogo</h2>
+                    <div class="w-50">
+                        <form id="catalog-search-form" class="d-flex" role="search">
+                            <input id="catalog-search-input" class="form-control me-2" type="search" placeholder="Buscar no catálogo..." aria-label="Search">
+                            <button class="btn btn-primary" type="submit">Buscar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="product-grid" class="row">
+            <div class="col-12 text-center" id="loading-state">
+                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Carregando...</span>
+                </div>
+                <p class="mt-2">Buscando produtos...</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // --- Variáveis Globais com dados do Django ---
+    const catalogApiUrl = "{% url 'core:product_catalog' %}";
+    const defaultImageUrl = "{% static 'foodmart/images/default-product.png' %}"; 
+
+    const productGrid = document.getElementById('product-grid');
+    const searchForm = document.getElementById('catalog-search-form');
+    const searchInput = document.getElementById('catalog-search-input');
+    
+    function renderProducts(products) {
+        productGrid.innerHTML = '';
+
+        if (!products || products.length === 0) {
+            productGrid.innerHTML = `<div class="col-12 text-center mt-5"><h4>Nenhum produto encontrado.</h4></div>`;
+            return;
+        }
+
+        products.forEach(product => {
+            const productCol = document.createElement('div');
+            productCol.className = 'col-lg-3 col-md-4 col-sm-6 mb-4';
+            
+            const imageUrl = product.imagem_url || defaultImageUrl;
+            
+            const priceDisplay = product.menor_preco 
+                ? `<p class="card-text fw-bold fs-5 text-primary">A partir de R$ ${parseFloat(product.menor_preco).toFixed(2).replace('.', ',')}</p>`
+                : '<p class="card-text text-muted small">Preço indisponível</p>';
+            
+            productCol.innerHTML = `
+                <div class="card h-100 shadow-sm border-0 product-card">
+                    <a href="/produto/${product.id}/">
+                        <img src="${imageUrl}" class="card-img-top" alt="${product.nome}" style="height: 200px; object-fit: cover;">
+                    </a>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">${product.nome}</h5>
+                        <p class="card-text text-muted small mb-2">${product.marca || 'Marca não informada'}</p>
+                        ${priceDisplay}
+                        <a href="/produto/${product.id}/" class="btn btn-primary mt-auto">Ver Detalhes</a>
+                    </div>
+                </div>
+            `;
+            productGrid.appendChild(productCol);
+        });
+    }
+
+    async function fetchProducts(query = '') {
+        productGrid.innerHTML = `<div class="col-12 text-center" id="loading-state"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Carregando...</span></div><p class="mt-2">Buscando produtos...</p></div>`;
+
+        let apiUrl = catalogApiUrl;
+        if (query) {
+            apiUrl += `?q=${encodeURIComponent(query)}`;
+        }
+
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            renderProducts(data.products);
+        } catch (error) {
+            console.error('Erro ao buscar produtos:', error);
+            productGrid.innerHTML = '<div class="col-12"><div class="alert alert-danger">Ocorreu um erro ao carregar os produtos.</div></div>';
+        }
+    }
+
+    searchForm.addEventListener('submit', function(event) {
+        event.preventDefault(); 
+        fetchProducts(searchInput.value);
+    });
+
+    fetchProducts();
+});
+</script>
+{% endblock %}

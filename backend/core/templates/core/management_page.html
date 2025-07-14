@@ -1,0 +1,72 @@
+{# core/templates/core/management_page_single_url.html #}
+
+{% extends "core/base.html" %}
+
+{% block title %}{{ title }} - Admin{% endblock %}
+
+{% block main_content %}
+<section class="py-5">
+<div class="container">
+    <h1 class="mb-4">{{ title }}</h1>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h3 class="h5 mb-0">{% if form.instance.pk %}Editar {{ item_type }}{% else %}Adicionar Novo(a) {{ item_type }}{% endif %}</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% if form.instance.pk %}
+                            <input type="hidden" name="id" value="{{ form.instance.pk }}">
+                        {% endif %}
+                        
+                        {{ form.as_p }}
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary mt-3">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+             <div class="card shadow-sm">
+                <div class="card-header">
+                    <h3 class="h5 mb-0">{{ item_type }}s Existentes</h3>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for item in items %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>
+                                {% if item_type == 'Loja' %}{{ item.nome }}{% endif %}
+                                {% if item_type == 'Produto' %}{{ item.nome }} <small class="text-muted">({{ item.categoria.nome|default:"N/A" }})</small>{% endif %}
+                                {% if item_type == 'Oferta' %}{{ item.produto.nome }} em {{ item.loja.nome }} - <strong>R$ {{ item.preco|stringformat:".2f" }}</strong>{% endif %}
+                            </span>
+                            <div class="actions">
+                                <form method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="edit">
+                                    <input type="hidden" name="id" value="{{ item.id }}">
+                                    <button type="submit" class="btn btn-sm btn-warning">Editar</button>
+                                </form>
+                                <form method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="{{ item.id }}">
+                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Tem certeza que deseja excluir?');">Excluir</button>
+                                </form>
+                            </div>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item text-muted">Nenhum item cadastrado ainda.</li>
+                    {% endfor %}
+                </ul>
+             </div>
+        </div>
+    </div>
+</div>
+</section>
+{% endblock %}

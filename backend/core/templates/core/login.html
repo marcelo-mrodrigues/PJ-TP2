@@ -1,58 +1,69 @@
+{# core/templates/core/login.html (Validado e Completo) #}
+
 {% extends "core/base.html" %}
 {% load static %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Login - FoodMart{% endblock %}
+
+{% block extra_css %}
+    {# Link para o Font Awesome, caso não esteja no base.html #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+{% endblock %}
 
 {% block main_content %}
-<div class="container h-100">
-  <div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-    <div class="user_card p-4 shadow rounded" style="width: 100%; max-width: 400px;">
-      
-      <div class="text-center mb-3">
-        <h3 class="mb-0">Login</h3>
-        <small class="text-muted">Acesse sua conta</small>
-      </div>
+<section class="py-5">
+<div class="container">
+  <div class="row d-flex justify-content-center align-items-center">
+    <div class="col-lg-5 col-md-7">
+      <div class="card border-0 shadow-sm p-4">
+        
+        <div class="text-center mb-4">
+          <h3 class="mb-1">Login</h3>
+          <p class="text-muted">Acesse sua conta para continuar</p>
+        </div>
 
-      <form method="POST" action="{% url 'login' %}">
-        {% csrf_token %}
+        <form method="POST" action="{% url 'core:login' %}">
+          {% csrf_token %}
 
-        {% if form.non_field_errors %}
-          <div class="alert alert-danger" role="alert">
-            {{ form.non_field_errors }}
-          </div>
-        {% endif %}
-
-        <div class="mb-3">
-          {{ form.username.label_tag }}
-          <div class="input-group">
-            <span class="input-group-text"><i class="fas fa-user"></i></span>
-            {{ form.username }}
-          </div>
-          {% if form.username.errors %}
-            <div class="text-danger small">{{ form.username.errors }}</div>
+          {% if form.non_field_errors or messages %}
+            <div class="alert alert-danger" role="alert">
+                {% if form.non_field_errors %}
+                    {{ form.non_field_errors|striptags }}
+                {% endif %}
+                {% for message in messages %}
+                    {% if "error" in message.tags %}{{ message }}{% endif %}
+                {% endfor %}
+            </div>
           {% endif %}
-        </div>
 
-        <div class="mb-3">
-          {{ form.password.label_tag }}
-          <div class="input-group">
-            <span class="input-group-text"><i class="fas fa-lock"></i></span>
-            {{ form.password }}
+          <div class="mb-3">
+            {{ form.username.label_tag }}
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-user"></i></span>
+              {{ form.username }}
+            </div>
           </div>
-          {% if form.password.errors %}
-            <div class="text-danger small">{{ form.password.errors }}</div>
-          {% endif %}
+
+          <div class="mb-4">
+            {{ form.password.label_tag }}
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-lock"></i></span>
+              {{ form.password }}
+            </div>
+          </div>
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">Entrar</button>
+          </div>
+        </form>
+
+        <div class="text-center mt-4">
+          <small class="text-muted">Não tem uma conta? <a href="{% url 'core:register' %}">Registre-se agora</a></small>
         </div>
 
-        <div class="d-grid">
-          <button type="submit" class="btn btn-primary">Entrar</button>
-        </div>
-      </form>
-
-      <div class="text-center mt-3">
-        <small>Não tem uma conta? <a href="{% url 'register' %}">Registre-se</a></small>
       </div>
     </div>
   </div>
 </div>
+</section>
 {% endblock %}

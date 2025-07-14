@@ -12,7 +12,7 @@
       </div>
       <div class="form_container p-3">
 
-        <form method="POST" action="{% url 'register' %}">
+        <form method="POST" action="{% url 'core:register' %}">
           {% csrf_token %}
 
           {% for field in form %}
@@ -40,7 +40,7 @@
         </form>
 
         <div class="mt-4 text-center">
-          Já possui uma conta? <a href="{% url 'login' %}">Login</a>
+          Já possui uma conta? <a href="{% url 'core:login' %}">Login</a>
         </div>
 
       </div>

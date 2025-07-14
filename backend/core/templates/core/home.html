@@ -1,17 +1,16 @@
 {% extends "core/base.html" %}
 {% load static %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Página Inicial - FoodMart{% endblock %}
 
 {% block main_content %}
+{# O conteúdo específico da Home Page começa aqui #}
 <section class="py-5 overflow-hidden">
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-12">
-
         <div class="section-header d-flex flex-wrap justify-content-between mb-5">
           <h2 class="section-title">Categorias</h2>
-
           <div class="d-flex align-items-center">
             <a href="#" class="btn-link text-decoration-none">Ver todas →</a>
             <div class="swiper-buttons ms-3">
@@ -20,62 +19,53 @@
             </div>
           </div>
         </div>
-
       </div>
     </div>
-
     <div class="row">
       <div class="col-md-12">
-
         <div class="category-carousel swiper">
           <div class="swiper-wrapper">
-            {% comment %} Substitua pelos dados reais do backend futuramente {% endcomment %}
-            <a href="#" class="nav-link category-item swiper-slide">
-              <img src="{% static 'images/icon-vegetables-broccoli.png' %}" alt="Categoria">
-              <h3 class="category-title">Frutas e Verduras</h3>
-            </a>
-            <a href="#" class="nav-link category-item swiper-slide">
-              <img src="{% static 'images/icon-bread-baguette.png' %}" alt="Categoria">
-              <h3 class="category-title">Pães e Doces</h3>
-            </a>
-            <a href="#" class="nav-link category-item swiper-slide">
-              <img src="{% static 'images/icon-soft-drinks-bottle.png' %}" alt="Categoria">
-              <h3 class="category-title">Refrigerantes</h3>
-            </a>
-            <a href="#" class="nav-link category-item swiper-slide">
-              <img src="{% static 'images/icon-wine-glass-bottle.png' %}" alt="Categoria">
-              <h3 class="category-title">Bebidas</h3>
-            </a>
-            <a href="#" class="nav-link category-item swiper-slide">
-              <img src="{% static 'images/icon-animal-products-drumsticks.png' %}" alt="Categoria">
-              <h3 class="category-title">Carnes</h3>
-            </a>
+            {# ESTA PARTE SERÁ DINÂMICA NO FUTURO #}
+            {% for categoria in categorias %} {# Exemplo de como será com dados do backend #}
+              <a href="#" class="nav-link category-item swiper-slide">
+                <img src="{{ categoria.imagem_url }}" alt="{{ categoria.nome }}">
+                <h3 class="category-title">{{ categoria.nome }}</h3>
+              </a>
+            {% empty %}
+              {# Dados estáticos como fallback, caso não venham dados do backend #}
+              <a href="#" class="nav-link category-item swiper-slide">
+                <img src="{% static 'foodmart/images/icon-vegetables-broccoli.png' %}" alt="Categoria">
+                <h3 class="category-title">Frutas e Verduras</h3>
+              </a>
+              <a href="#" class="nav-link category-item swiper-slide">
+                <img src="{% static 'foodmart/images/icon-bread-baguette.png' %}" alt="Categoria">
+                <h3 class="category-title">Pães e Doces</h3>
+              </a>
+            {% endfor %}
           </div>
         </div>
-
       </div>
     </div>
   </div>
 </section>
+
+{# Adicione outras seções da sua página inicial aqui #}
+
 {% endblock %}
 
+
 {% block extra_js %}
-<!-- Inclua o Swiper.js se ainda não estiver no base.html -->
-<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+{# O Swiper.js já está no base.html, então você só precisa do script de inicialização #}
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     new Swiper('.category-carousel', {
-      slidesPerView: 4,
+      slidesPerView: 5,
       spaceBetween: 30,
       navigation: {
         nextEl: '.category-carousel-next',
         prevEl: '.category-carousel-prev',
       },
-      breakpoints: {
-        768: { slidesPerView: 3 },
-        992: { slidesPerView: 4 },
-        1200: { slidesPerView: 5 },
-      },
+      // ... outros breakpoints
     });
   });
 </script>
