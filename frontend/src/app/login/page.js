@@ -16,6 +16,10 @@ export default function LoginPage() {
 
   // Efeito para ler mensagens do Django após redirecionamento
   useEffect(() => {
+    if (searchParams.get('registered') === 'true') {
+      setInfoMessage("Usuário cadastrado com sucesso")     
+    }
+
     const djangoMessages = searchParams.get('messages');
     if (djangoMessages) {
       // Adapte como as mensagens do Django são passadas.

@@ -45,7 +45,7 @@ export default function RegisterPage() {
     const formData = new FormData();
     formData.append('username', username);
     formData.append('email', email);
-    formData.append('password', password);
+    formData.append('password1', password);
     formData.append('password2', confirmPassword); // Django UserCreationForm usa password2
     formData.append('first_name', firstName);
     formData.append('last_name', lastName);
@@ -62,7 +62,7 @@ export default function RegisterPage() {
 
 
     try {
-      const response = await fetch('http://localhost:8000/register/', { // Use a URL completa do seu backend Django
+      const response = await fetch('http://localhost:8000/api/v1/register', { // Use a URL completa do seu backend Django
         method: 'POST',
         body: formData, // Envia FormData diretamente
         // headers: {
@@ -97,6 +97,7 @@ export default function RegisterPage() {
         // if (response.status === 400 && data.errors) {
         //   setErrors(data.errors);
         // }
+        router.push('/login?registered=true')
       } else {
         // Lida com outros status de erro da rede/servidor
         setErrors(['Ocorreu um erro no servidor. Tente novamente.']);
