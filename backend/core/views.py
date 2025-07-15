@@ -7,6 +7,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.urls import reverse
+from .utils import render_lojas_html, process_loja_form, _get_base_html_context
+
 
 
 # Funções e modelos do seu projeto
@@ -158,7 +160,7 @@ def aprovar_produto_view(request):
         produto.save()
 
         messages.success(request, f"Produto '{produto.nome}' aprovado com sucesso!")
-        return redirect("core:ver_aprovar_produtos") 
+        return redirect("core:aprovar_produto") 
 
     produtos_pendentes = Produto.objects.filter(aprovado=False)
     return render(
@@ -205,47 +207,42 @@ def historico_view(request):
 
 @staff_member_required
 def manage_stores_view(request):
-    """Gerencia Lojas (Adicionar, Listar, Editar e Excluir em uma única URL)."""
     form = LojaForm()
-
+    additional_info = ""
+    
     if request.method == "POST":
         action = request.POST.get("action")
 
-        # Ação para carregar um item no formulário para edição
-        if action == "edit":
-            store_id = request.POST.get("id")
-            instance = get_object_or_404(Loja, id=store_id)
-            form = LojaForm(instance=instance)
-            messages.info(request, f"Editando a loja: {instance.nome}")
+        if action == "add_or_update_store":
+            form, redirect_needed, additional_info = process_loja_form(request)
+            if redirect_needed:
+                return redirect("manage_stores")
 
-        # Ação para excluir um item
-        elif action == "delete":
-            store_id = request.POST.get("id")
-            instance = get_object_or_404(Loja, id=store_id)
-            messages.success(request, f"Loja '{instance.nome}' excluída com sucesso!")
-            instance.delete()
-            return redirect("core:manage_stores")
+        elif action == "delete_store":
+            store_id = request.POST.get("store_id")
+            if store_id:
+                loja = get_object_or_404(Loja, id=store_id)
+                loja.delete()
+                messages.success(request, f"Loja '{loja.nome}' excluída com sucesso!")
+            return redirect("manage_stores")
 
-        # Ação para salvar um item (novo ou editado)
-        else:  # Ação padrão é salvar
-            store_id = request.POST.get("id")
-            instance = get_object_or_404(Loja, id=store_id) if store_id else None
-            form = LojaForm(request.POST, instance=instance)
-            if form.is_valid():
-                loja = form.save()
-                messages.success(request, f"Loja '{loja.nome}' salva com sucesso!")
-                return redirect("core:manage_stores")
-            else:
-                messages.error(request, "Erro ao salvar. Verifique os campos.")
+        elif action == "edit_store":
+            store_id = request.POST.get("store_id")
+            if store_id:
+                loja = get_object_or_404(Loja, id=store_id)
+                form = LojaForm(instance=loja)
+                additional_info = f"<p>Editando loja: <strong>{loja.nome}</strong></p>"
 
-    all_stores = Loja.objects.all().order_by("nome")
-    context = {
-        "form": form,
-        "items": all_stores,
-        "title": "Gerenciar Lojas",
-        "item_type": "Loja",
-    }
-    return render(request, "core/management_page_single_url.html", context)
+    lojas = Loja.objects.all().order_by("nome")
+    lojas_html = render_lojas_html(request, lojas)
+
+    return render(request, "core/manage_stores.html", _get_base_html_context(
+        request,
+        "Gerenciar Lojas",
+        form_obj=form,
+        existing_items_html=lojas_html,
+        additional_info_html=additional_info,
+    ))
 
 
 @staff_member_required
@@ -341,3 +338,6 @@ def manage_offers_view(request):
         "item_type": "Oferta",
     }
     return render(request, "core/management_page_single_url.html", context)
+
+
+
