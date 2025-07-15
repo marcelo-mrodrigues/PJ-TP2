@@ -146,7 +146,9 @@ com esses comandos você pode executar os testes, e criar um report, com esse re
 ```
 cd backend/
 source venv/bin/activate
-coverage run manage.py test core
-coverage report
-coverage html
+python manage.py test core # pra testar toda core
+python manage.py test core.testModels # pra testar um dos arquivos de teste
+coverage run manage.py test core # coverage total do core
+coverage report # pra passar pro html
+coverage html # pra abrir o html do coverage no navegador
 ```
