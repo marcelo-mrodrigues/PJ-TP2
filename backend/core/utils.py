@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from .models import Loja
 from .forms import LojaForm
-
+from .models import Produto, ListaCompra, ItemLista
 
 
 def get_product_info(product_id):
@@ -51,6 +51,48 @@ def get_product_info(product_id):
         "ofertas": ofertas_data,
     }
     return produto_info
+
+
+def merge_session_cart_to_db(request):
+    """
+    Pega o carrinho da sessão (de um usuário anônimo) e o transfere
+    para o carrinho permanente do usuário no banco de dados após o login.
+    """
+    if "cart" in request.session and request.user.is_authenticated:
+        session_cart = request.session.get("cart", {})
+
+        if not session_cart:
+            return  # Sai se o carrinho da sessão estiver vazio
+
+        # Pega ou cria a lista de compras ativa do usuário
+        user_cart, created = ListaCompra.objects.get_or_create(
+            usuario=request.user, finalizada=False
+        )
+
+        for product_id, item_data in session_cart.items():
+            try:
+                produto = Produto.objects.get(id=product_id)
+                quantidade_sessao = item_data.get("quantity", 1)
+
+                # Verifica se o item já existe no carrinho do banco de dados
+                item_bd, item_created = ItemLista.objects.get_or_create(
+                    lista=user_cart, produto=produto
+                )
+
+                if item_created:
+                    # Se o item foi criado agora, define a quantidade da sessão
+                    item_bd.quantidade = quantidade_sessao
+                else:
+                    # Se o item já existia, soma as quantidades
+                    item_bd.quantidade += quantidade_sessao
+
+                item_bd.save()
+
+            except Produto.DoesNotExist:
+                continue  # Pula para o próximo item se o produto não existir mais
+
+        # Limpa o carrinho da sessão após a fusão
+        del request.session["cart"]
 
 
 def search_products(query=""):
@@ -148,18 +190,25 @@ def process_loja_form(request):
         for field, errors in form.errors.items():
             for error in errors:
                 messages.error(request, f"Erro no campo '{field}': {error}")
-        info = f"<p>Editando loja: <strong>{instance.nome}</strong></p>" if instance else ""
+        info = (
+            f"<p>Editando loja: <strong>{instance.nome}</strong></p>"
+            if instance
+            else ""
+        )
         return form, False, info
-    
+
 
 def _get_messages_html(request):
     messages_html = ""
     if messages.get_messages(request):
-        messages_html = "".join([
-            f'<p style="color:{"green" if msg.tags == "success" else "red" if msg.tags == "error" else "blue"};">{msg}</p>'
-            for msg in messages.get_messages(request)
-        ])
+        messages_html = "".join(
+            [
+                f'<p style="color:{"green" if msg.tags == "success" else "red" if msg.tags == "error" else "blue"};">{msg}</p>'
+                for msg in messages.get_messages(request)
+            ]
+        )
     return messages_html
+
 
 def _get_action_value_for_form(title):
     """Retorna o valor correto para o campo 'action' do formulário principal."""
@@ -169,19 +218,21 @@ def _get_action_value_for_form(title):
         return "add_or_update_product"
     elif "Oferta" in title:
         return "add_or_update"
-    return "" # Fallback caso o título não corresponda a nenhum
+    return ""  # Fallback caso o título não corresponda a nenhum
 
-def _get_base_html_context(request, title, form_obj=None, existing_items_html="", additional_info_html=""):
+
+def _get_base_html_context(
+    request, title, form_obj=None, existing_items_html="", additional_info_html=""
+):
     # Inicializa form_header_text com um valor padrão.
     # Esta linha garante que a variável sempre terá um valor.
-    item_type = title.split(' ')[-1].replace('s', '').replace('Oferta', 'Oferta')
-    form_header_text = f"Adicionar Novo {item_type}" # Valor padrão (para caso form_obj seja None ou sem pk)
+    item_type = title.split(" ")[-1].replace("s", "").replace("Oferta", "Oferta")
+    form_header_text = f"Adicionar Novo {item_type}"  # Valor padrão (para caso form_obj seja None ou sem pk)
 
     if form_obj and form_obj.instance and form_obj.instance.pk:
         # Se form_obj existe, tem uma instância e ela tem uma PK, é uma edição
         form_header_text = f"Editar {item_type}"
     # Não precisamos de um 'else' explícito aqui, pois 'form_header_text' já tem um valor padrão.
-
 
     return {
         "content": (
@@ -189,20 +240,17 @@ def _get_base_html_context(request, title, form_obj=None, existing_items_html=""
             f"""<h2>{title}</h2>"""
             f"""{_get_messages_html(request)}"""
             f"""{additional_info_html}"""
-
-            f"""<h3>{form_header_text}</h3>""" # Usa a variável que agora está garantida
+            f"""<h3>{form_header_text}</h3>"""  # Usa a variável que agora está garantida
             f"""<form method="post" action="">"""
             f"""<input type="hidden" name="csrfmiddlewaretoken" value="{get_token(request)}">"""
-            f"""<input type="hidden" name="action" value="{_get_action_value_for_form(title)}">""" # Chamada para função auxiliar de action_value
+            f"""<input type="hidden" name="action" value="{_get_action_value_for_form(title)}">"""  # Chamada para função auxiliar de action_value
             f"""{form_obj.as_p() if form_obj else ''}"""
             f"""<button type="submit" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Salvar</button>"""
             f"""</form>"""
-            
             f"""<h3 style="margin-top: 40px;">{title.replace('Gerenciar', 'Listar')} Existentes</h3>"""
             f"""<div style="text-align: left; margin-top: 20px;">"""
             f"""{existing_items_html}"""
             f"""</div>"""
-
             f"""<br><br>"""
             f"""<a href="/" style="color: #007bff; text-decoration: none;">Voltar para a Home</a>"""
             f"""</div>"""

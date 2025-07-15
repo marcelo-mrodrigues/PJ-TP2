@@ -8,10 +8,12 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.urls import reverse
 from .utils import render_lojas_html, process_loja_form, _get_base_html_context
+from django.http import JsonResponse
+from .models import Produto
 
 
 # Funções e modelos do seu projeto
-from .utils import get_product_info, search_products
+from .utils import get_product_info, search_products, merge_session_cart_to_db
 from .models import Produto, Oferta, Categoria, Marca, Loja
 from .forms import (
     CustomUserCreationForm,
@@ -27,10 +29,97 @@ from django.contrib.auth import logout
 Usuario = get_user_model()
 
 
-# ================================================================= #
-#                  VIEWS DE AUTENTICAÇÃO E PÁGINAS BÁSICAS          #
-# ================================================================= #
-# (Nenhuma mudança aqui)
+def get_cart_data(request):
+    """Função auxiliar para obter os dados do carrinho da sessão."""
+    cart = request.session.get("cart", {})
+    cart_items = []
+    total_geral = 0
+
+    for product_id, item_data in cart.items():
+        produto = Produto.objects.get(id=product_id)
+        total_item = item_data["quantity"] * float(
+            produto.ofertas.order_by("preco").first().preco
+        )  # Exemplo de preço
+
+        cart_items.append(
+            {
+                "id": produto.id,
+                "nome": produto.nome,
+                "quantity": item_data["quantity"],
+                "preco": f"{total_item / item_data['quantity']:.2f}",
+                "total_item": f"{total_item:.2f}",
+                "imagem_url": produto.imagem_url,
+            }
+        )
+        total_geral += total_item
+
+    return {
+        "items": cart_items,
+        "total": f"{total_geral:.2f}",
+        "item_count": sum(d["quantity"] for d in cart.values()),
+    }
+
+
+def add_to_cart_view(request):
+    """API para adicionar um item ao carrinho."""
+    if request.method == "POST":
+        product_id = request.POST.get("product_id")
+
+        # Inicializa o carrinho se não existir
+        cart = request.session.get("cart", {})
+
+        if product_id in cart:
+            cart[product_id]["quantity"] += 1
+        else:
+            cart[product_id] = {"quantity": 1}
+
+        request.session["cart"] = cart
+
+        # Retorna os dados atualizados do carrinho
+        return JsonResponse(get_cart_data(request))
+
+    return JsonResponse({"error": "Método inválido"}, status=400)
+
+
+@login_required
+def checkout_view(request):
+    """
+    Exibe a página de finalização de compra.
+    Esta view busca os dados do carrinho da sessão e os envia para o template.
+    """
+    # 1. Busca os dados do carrinho usando nossa função auxiliar
+    cart_data = get_cart_data(request)
+
+    # 2. Se o carrinho estiver vazio, redireciona para a página do catálogo com uma mensagem.
+    if not cart_data["items"]:
+        messages.warning(
+            request,
+            "Seu carrinho está vazio. Adicione itens antes de finalizar a compra.",
+        )
+        return redirect("core:product_catalog_page")
+
+    # 3. Cria o contexto para enviar os dados para o template
+    context = {"cart": cart_data}
+
+    # 4. Renderiza a página de checkout, passando os dados do carrinho
+    return render(request, "core/checkout.html", context)
+
+
+def remove_from_cart_view(request):
+    """API para remover um item completamente do carrinho."""
+    if request.method == "POST":
+        product_id = request.POST.get("product_id")
+        cart = request.session.get("cart", {})
+
+        if product_id in cart:
+            del cart[product_id]  # Remove o item do dicionário
+
+        request.session["cart"] = cart
+
+        # Retorna os dados atualizados do carrinho
+        return JsonResponse(get_cart_data(request))
+
+    return JsonResponse({"error": "Método inválido"}, status=400)
 
 
 def home_view(request):
@@ -64,7 +153,7 @@ def register_view(request):
 
 
 def login_view(request):
-    """Página de login de usuários."""
+    """Página de login de usuários com redirecionamento e fusão de carrinho."""
     if request.method == "POST":
         form = CustomAuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -73,18 +162,34 @@ def login_view(request):
             messages.success(
                 request, f"Login realizado com sucesso, bem-vindo(a) {user.username}!"
             )
-            return redirect("core:home")
+
+            # --- LÓGICA DO CARRINHO ---
+            # Transfere o carrinho da sessão para o banco de dados do usuário
+            merge_session_cart_to_db(request)
+
+            # --- LÓGICA DE REDIRECIONAMENTO ---
+            # Verifica se há um parâmetro 'next' na URL (ex: /login/?next=/checkout/)
+            next_url = request.GET.get("next")
+            if next_url:
+                return redirect(next_url)
+            else:
+                # Se não houver, redireciona para a página inicial como padrão
+                return redirect("core:home")
         else:
-            messages.error(request, "Nome de usuário ou senha inválidos.")
+            # Se o formulário for inválido, a própria classe do formulário
+            # já gera a mensagem de erro "usuário ou senha inválidos".
+            # Não precisamos de uma mensagem extra aqui.
+            pass
     else:
         form = CustomAuthenticationForm()
+
     return render(request, "core/login.html", {"form": form})
 
 
-# ================================================================= #
-#           VIEWS E API PARA O FRONTEND (CLIENTE FINAL)             #
-# ================================================================= #
-# (Nomes e lógica adaptados ao seu urls.py)
+def get_cart_view(request):
+    """API para buscar os dados atuais do carrinho na sessão."""
+    cart_data = get_cart_data(request)  # Reutiliza a função que já criamos
+    return JsonResponse(cart_data)
 
 
 def product_catalog_view(request):
@@ -125,7 +230,6 @@ def get_product_data_api(request, product_id):
 #                  VIEWS DE PLACEHOLDER (EM CONSTRUÇÃO)             #
 # ================================================================= #
 # (Todas as suas views de placeholder foram adicionadas)
-
 
 @login_required(
     login_url="/login/"
@@ -185,7 +289,6 @@ def aprovar_produto_view(request):
     return render(
         request, "core/aprovar_produto.html", {"produtos": produtos_pendentes}
     )
-
 
 def buscar_produtos_view(request):
     # Nota: a busca da API já é feita pela 'product_catalog_view'.
@@ -256,7 +359,6 @@ def manage_stores_view(request):
     lojas = Loja.objects.all().order_by("nome")
     lojas_html = render_lojas_html(request, lojas)
 
-
     return render(
         request,
         "core/manage_stores.html",
@@ -288,7 +390,9 @@ def manage_products_view(request):
             product_id = request.POST.get("id")
             instance = get_object_or_404(Produto, id=product_id)
             instance.delete()
-            messages.success(request, f"Produto '{instance.nome}' excluído com sucesso!")
+            messages.success(
+                request, f"Produto '{instance.nome}' excluído com sucesso!"
+            )
             return redirect("core:manage_products")
 
         else:  # Adicionar ou salvar edição
@@ -300,7 +404,9 @@ def manage_products_view(request):
                 if not instance:
                     product.adicionado_por = request.user
                 product.save()
-                messages.success(request, f"Produto '{product.nome}' salvo com sucesso!")
+                messages.success(
+                    request, f"Produto '{product.nome}' salvo com sucesso!"
+                )
                 return redirect("core:manage_products")
             else:
                 messages.error(request, "Erro ao salvar. Verifique os campos.")
@@ -343,7 +449,9 @@ def manage_offers_view(request):
             form = OfertaForm(request.POST, instance=instance)
             if form.is_valid():
                 offer = form.save()
-                messages.success(request, f"Oferta para '{offer.produto.nome}' salva com sucesso!")
+                messages.success(
+                    request, f"Oferta para '{offer.produto.nome}' salva com sucesso!"
+                )
                 return redirect("core:manage_offers")
             else:
                 messages.error(request, "Erro ao salvar. Verifique os campos.")
