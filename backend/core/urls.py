@@ -31,6 +31,8 @@ urlpatterns = [
     path("manage/stores/", views.manage_stores_view, name="manage_stores"),
     path("manage/products/", views.manage_products_view, name="manage_products"),
     path("manage/offers/", views.manage_offers_view, name="manage_offers"),
+    path("manage/categories/", views.manage_categories_view, name="manage_categories"),
+    path("manage/brands/", views.manage_brands_view, name="manage_brands"),
     path(
         "manage/approve-products/",
         views.aprovar_produto_view,

@@ -163,3 +163,15 @@ class CategoriaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["nome"].widget.attrs["class"] = "form-control"
+
+
+
+class MarcaForm(forms.ModelForm):
+    class Meta:
+        model = Marca
+        fields = ["nome"]
+        labels = {"nome": "Nome da Marca"}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["nome"].widget.attrs["class"] = "form-control"

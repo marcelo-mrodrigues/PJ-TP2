@@ -19,6 +19,8 @@ from .forms import (
     ProdutoForm,
     LojaForm,
     OfertaForm,
+    CategoriaForm, 
+    MarcaForm,
 )
 from django.contrib.auth import logout
 
@@ -356,3 +358,84 @@ def manage_offers_view(request):
         "item_type": "Oferta",
     }
     return render(request, "core/manage_ofertas.html", context)
+
+
+def manage_categories_view(request):
+    form = CategoriaForm()
+    additional_info_html = ""
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+        category_id = request.POST.get("id")
+
+        if action == "edit":
+            instance = get_object_or_404(Categoria, id=category_id)
+            form = CategoriaForm(instance=instance)
+            additional_info_html = f"Editando categoria: <strong>{instance.nome}</strong>"
+
+        elif action == "delete":
+            instance = get_object_or_404(Categoria, id=category_id)
+            instance.delete()
+            messages.success(request, f"Categoria '{instance.nome}' excluída com sucesso!")
+            return redirect("core:manage_categories")
+
+        else:
+            instance = get_object_or_404(Categoria, id=category_id) if category_id else None
+            form = CategoriaForm(request.POST, instance=instance)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Categoria salva com sucesso!")
+                return redirect("core:manage_categories")
+            else:
+                messages.error(request, "Erro ao salvar categoria.")
+
+    items = Categoria.objects.all()
+    context = {
+        "form": form,
+        "items": items,
+        "title": "Gerenciar Categorias",
+        "item_type": "Categoria",
+        "additional_info_html": additional_info_html,
+    }
+    return render(request, "core/manage_generico.html", context)
+
+
+@staff_member_required
+def manage_brands_view(request):
+    form = MarcaForm()
+    additional_info_html = ""
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+        brand_id = request.POST.get("id")
+
+        if action == "edit":
+            instance = get_object_or_404(Marca, id=brand_id)
+            form = MarcaForm(instance=instance)
+            additional_info_html = f"Editando marca: <strong>{instance.nome}</strong>"
+
+        elif action == "delete":
+            instance = get_object_or_404(Marca, id=brand_id)
+            instance.delete()
+            messages.success(request, f"Marca '{instance.nome}' excluída com sucesso!")
+            return redirect("core:manage_brands")
+
+        else:
+            instance = get_object_or_404(Marca, id=brand_id) if brand_id else None
+            form = MarcaForm(request.POST, instance=instance)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Marca salva com sucesso!")
+                return redirect("core:manage_brands")
+            else:
+                messages.error(request, "Erro ao salvar marca.")
+
+    items = Marca.objects.all()
+    context = {
+        "form": form,
+        "items": items,
+        "title": "Gerenciar Marcas",
+        "item_type": "Marca",
+        "additional_info_html": additional_info_html,
+    }
+    return render(request, "core/manage_generico.html", context)
