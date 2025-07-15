@@ -4,25 +4,56 @@
 {% block title %}Solicitar Produto - FoodMart{% endblock %}
 
 {% block main_content %}
-<div class="max-w-2xl mx-auto py-8 px-4">
-    <h1 class="text-2xl font-bold mb-4">Solicitar Novo Produto</h1>
+<div class="container my-5"> {# Usamos container do Bootstrap para centralizar e dar padding #}
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10"> {# Ajuste a largura do formulário #}
+            <h1 class="text-center mb-4">Solicitar Novo Produto</h1>
 
-    {% if messages %}
-        <ul class="mb-4">
-            {% for message in messages %}
-                <li class="text-{{ message.tags }}">{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+            {% if messages %}
+                <ul class="list-unstyled mb-4"> {# Removido list-style: none #}
+                    {% for message in messages %}
+                        <li class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}">{{ message }}</li> {# Classes de alerta do Bootstrap #}
+                    {% endfor %}
+                </ul>
+            {% endif %}
 
-    <form method="post" class="space-y-4">
-        {% csrf_token %}
-        <input type="text" name="nome" placeholder="Nome do Produto" class="w-full border p-2 rounded" required>
-        <textarea name="descricao" placeholder="Descrição" class="w-full border p-2 rounded" rows="4"></textarea>
-        <input type="url" name="imagem_url" placeholder="URL da Imagem" class="w-full border p-2 rounded"> <!-- OU BINARIO-->
-        <input type="text" name="categoria" placeholder="Categoria" class="w-full border p-2 rounded">
-        <input type="text" name="marca" placeholder="Marca" class="w-full border p-2 rounded">
-        <button type="submit" class="bg-blue-600 text-black px-4 py-2 rounded">Enviar Solicitação</button>
-    </form>
+            <form method="post">
+                {% csrf_token %}
+                
+                {# Campo Nome do Produto #}
+                <div class="mb-3"> {# mb-3 para margem inferior de cada grupo #}
+                    <label for="id_nome" class="form-label">Nome do Produto:</label>
+                    <input type="text" id="id_nome" name="nome" placeholder="Nome do Produto" class="form-control" required>
+                </div>
+                
+                {# Campo Descrição #}
+                <div class="mb-3">
+                    <label for="id_descricao" class="form-label">Descrição:</label>
+                    <textarea id="id_descricao" name="descricao" placeholder="Descrição detalhada do produto" rows="4" class="form-control"></textarea>
+                </div>
+                
+                {# Campo URL da Imagem #}
+                <div class="mb-3">
+                    <label for="id_imagem_url" class="form-label">URL da Imagem:</label>
+                    <input type="url" id="id_imagem_url" name="imagem_url" placeholder="Ex: https://exemplo.com/imagem.jpg" class="form-control">
+                </div> 
+                
+                {# Campo Categoria #}
+                <div class="mb-3">
+                    <label for="id_categoria" class="form-label">Categoria:</label>
+                    <input type="text" id="id_categoria" name="categoria" placeholder="Ex: Eletrônicos, Alimentos" class="form-control">
+                </div>
+                
+                {# Campo Marca #}
+                <div class="mb-3">
+                    <label for="id_marca" class="form-label">Marca:</label>
+                    <input type="text" id="id_marca" name="marca" placeholder="Ex: Sony, Nestlé" class="form-control">
+                </div>
+                
+                {# Botão de Envio #}
+                <button type="submit" class="btn btn-primary mt-3">Enviar Solicitação</button>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}

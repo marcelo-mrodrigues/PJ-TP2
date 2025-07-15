@@ -94,14 +94,20 @@ def product_catalog_view(request):
 def produto_view(request, product_id):
     # === CORREÇÃO AQUI: Passar a URL RELATIVA do proxy para o template ===
     # Esta URL deve ser o prefixo do proxy + a URL da API real no Django
-    endpoint_url = reverse("core:get_product_data_api", args=[product_id]) # Ex: /api/produto-dados/1/
+    endpoint_url = reverse(
+        "core:get_product_data_api", args=[product_id]
+    )  # Ex: /api/produto-dados/1/
     # O browser fará o fetch para /api/produto-dados/1/
     # E o next.config.mjs vai reescrever para http://localhost:8000/api/produto-dados/1/
 
-    return render(request, "core/produto.html", {
-        "product_id": product_id,
-        "endpoint_url": endpoint_url, # Agora passa a URL relativa do proxy
-    })
+    return render(
+        request,
+        "core/produto.html",
+        {
+            "product_id": product_id,
+            "endpoint_url": endpoint_url,  # Agora passa a URL relativa do proxy
+        },
+    )
 
 
 def get_product_data_api(request, product_id):
@@ -117,9 +123,15 @@ def get_product_data_api(request, product_id):
 # ================================================================= #
 # (Todas as suas views de placeholder foram adicionadas)
 
-# login required?
+
+@login_required(
+    login_url="/login/"
+)  # Redireciona para a URL de login se o usuário não estiver autenticado
 def solicitar_produto_view(request):
-    """Renderiza o formulário de solicitação de produto e processa o envio."""
+    """
+    Renderiza o formulário de solicitação de produto e processa o envio.
+    Apenas usuários autenticados podem acessar esta view.
+    """
     if request.method == "POST":
         nome = request.POST.get("nome")
         descricao = request.POST.get("descricao")
@@ -140,7 +152,7 @@ def solicitar_produto_view(request):
             imagem_url=imagem_url,
             categoria=categoria,
             marca=marca,
-            adicionado_por=request.user if request.user.is_authenticated else None
+            adicionado_por=request.user,
         )
 
         messages.success(request, "Produto solicitado com sucesso!")
@@ -148,8 +160,14 @@ def solicitar_produto_view(request):
 
     return render(request, "core/solicitar_produto.html")
 
-# adm required?
+
+@staff_member_required(
+    login_url="/admin/login/"
+)  # Redireciona para a URL de login do admin se não for staff
 def aprovar_produto_view(request):
+    """
+    Permite que apenas usuários com status de staff (administradores) aprovem produtos.
+    """
     if request.method == "POST":
         produto_id = request.POST.get("produto_id")
         produto = get_object_or_404(Produto, id=produto_id)
@@ -158,12 +176,13 @@ def aprovar_produto_view(request):
         produto.save()
 
         messages.success(request, f"Produto '{produto.nome}' aprovado com sucesso!")
-        return redirect("core:ver_aprovar_produtos") 
+        return redirect("core:ver_aprovar_produtos")
 
     produtos_pendentes = Produto.objects.filter(aprovado=False)
     return render(
         request, "core/aprovar_produto.html", {"produtos": produtos_pendentes}
     )
+
 
 def buscar_produtos_view(request):
     # Nota: a busca da API já é feita pela 'product_catalog_view'.
