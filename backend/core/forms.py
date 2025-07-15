@@ -118,10 +118,10 @@ class LojaForm(forms.ModelForm):
         }
         widgets = {
             "url": forms.URLInput(
-                attrs={"placeholder": "Ex: http://www.minhalojatop.com.br"}
+                attrs={"placeholder": "Ex: http://www.minhaloja.com.br"}
             ),
             "logo_url": forms.URLInput(
-                attrs={"placeholder": "Ex: http://www.minhalojatop.com.br/logo.png"}
+                attrs={"placeholder": "Ex: http://www.minhaloja.com.br/logo.png"}
             ),
         }
 
@@ -138,7 +138,6 @@ class OfertaForm(forms.ModelForm):
 
     class Meta:
         model = Oferta
-        # CORREÇÃO APLICADA AQUI
         fields = ["produto", "loja", "preco", "offer_id_hidden"]
         labels = {"produto": "Produto", "loja": "Loja", "preco": "Preço"}
         widgets = {"preco": forms.NumberInput(attrs={"step": "0.01", "min": "0.01"})}

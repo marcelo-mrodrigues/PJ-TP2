@@ -1,0 +1,57 @@
+{% extends "core/base.html" %}
+
+{% block title %}Gerenciar Ofertas{% endblock %}
+
+{% block main_content %}
+  <div class="container mt-4">
+    <h2 class="mb-4">Gerenciar Ofertas</h2>
+
+    {% if additional_info_html %}
+      <div class="alert alert-info">
+        {{ additional_info_html|safe }}
+      </div>
+    {% endif %}
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="post" action="{% url 'core:manage_offers' %}" class="mb-4">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="add_or_update_offer">
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-primary">Salvar Oferta</button>
+    </form>
+
+    <hr />
+
+    <h4>Ofertas Cadastradas</h4>
+    {% for offer in items %}
+      <div class="d-flex justify-content-between align-items-center mb-2 p-2 border-bottom">
+        <span>
+          {{ offer.produto.nome }} na {{ offer.loja.nome }} por 
+          <strong>R$ {{ offer.preco|floatformat:2 }}</strong> 
+          ({{ offer.data_captura|date:"d/m/Y H:i" }})
+        </span>
+        <div>
+          <form method="post" action="{% url 'core:manage_offers' %}" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="edit">
+            <input type="hidden" name="id" value="{{ offer.id }}">
+            <button type="submit" class="btn btn-warning btn-sm me-2">Editar</button>
+          </form>
+          <form method="post" action="{% url 'core:manage_offers' %}" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="id" value="{{ offer.id }}">
+            <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+          </form>
+        </div>
+      </div>
+    {% empty %}
+      <p>Nenhuma oferta cadastrada ainda.</p>
+    {% endfor %}
+  </div>
+{% endblock %}

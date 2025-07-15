@@ -234,7 +234,7 @@ def manage_stores_view(request):
         if action == "add_or_update_store":
             form, redirect_needed, additional_info = process_loja_form(request)
             if redirect_needed:
-                return redirect("manage_stores")
+                return redirect("core:manage_stores")
 
         elif action == "delete_store":
             store_id = request.POST.get("store_id")
@@ -242,7 +242,7 @@ def manage_stores_view(request):
                 loja = get_object_or_404(Loja, id=store_id)
                 loja.delete()
                 messages.success(request, f"Loja '{loja.nome}' excluída com sucesso!")
-            return redirect("manage_stores")
+            return redirect("core:manage_stores")
 
         elif action == "edit_store":
             store_id = request.POST.get("store_id")
@@ -253,6 +253,7 @@ def manage_stores_view(request):
 
     lojas = Loja.objects.all().order_by("nome")
     lojas_html = render_lojas_html(request, lojas)
+
 
     return render(
         request,
@@ -269,8 +270,8 @@ def manage_stores_view(request):
 
 @staff_member_required
 def manage_products_view(request):
-    """Gerencia Produtos (Adicionar, Listar, Editar e Excluir em uma única URL)."""
     form = ProdutoForm()
+    additional_info = ""
 
     if request.method == "POST":
         action = request.POST.get("action")
@@ -284,14 +285,12 @@ def manage_products_view(request):
         elif action == "delete":
             product_id = request.POST.get("id")
             instance = get_object_or_404(Produto, id=product_id)
-            messages.success(
-                request, f"Produto '{instance.nome}' excluído com sucesso!"
-            )
             instance.delete()
+            messages.success(request, f"Produto '{instance.nome}' excluído com sucesso!")
             return redirect("core:manage_products")
 
-        else:
-            product_id = request.POST.get("id")
+        else:  # Adicionar ou salvar edição
+            product_id = request.POST.get("product_id_hidden")
             instance = get_object_or_404(Produto, id=product_id) if product_id else None
             form = ProdutoForm(request.POST, instance=instance)
             if form.is_valid():
@@ -299,10 +298,8 @@ def manage_products_view(request):
                 if not instance:
                     product.adicionado_por = request.user
                 product.save()
-                messages.success(
-                    request, f"Produto '{product.nome}' salvo com sucesso!"
-                )
-                return redirect("manage_products")
+                messages.success(request, f"Produto '{product.nome}' salvo com sucesso!")
+                return redirect("core:manage_products")
             else:
                 messages.error(request, "Erro ao salvar. Verifique os campos.")
 
@@ -312,8 +309,9 @@ def manage_products_view(request):
         "items": all_products,
         "title": "Gerenciar Produtos",
         "item_type": "Produto",
+        "additional_info_html": additional_info,
     }
-    return render(request, "core/management_page_single_url.html", context)
+    return render(request, "core/manage_produtos.html", context)
 
 
 @staff_member_required
@@ -335,18 +333,16 @@ def manage_offers_view(request):
             instance = get_object_or_404(Oferta, id=offer_id)
             messages.success(request, f"Oferta '{instance}' excluída com sucesso!")
             instance.delete()
-            return redirect("manage_offers")
+            return redirect("core:manage_offers")
 
         else:
-            offer_id = request.POST.get("id")
+            offer_id = request.POST.get("offer_id_hidden")
             instance = get_object_or_404(Oferta, id=offer_id) if offer_id else None
             form = OfertaForm(request.POST, instance=instance)
             if form.is_valid():
                 offer = form.save()
-                messages.success(
-                    request, f"Oferta para '{offer.produto.nome}' salva com sucesso!"
-                )
-                return redirect("manage_offers")
+                messages.success(request, f"Oferta para '{offer.produto.nome}' salva com sucesso!")
+                return redirect("core:manage_offers")
             else:
                 messages.error(request, "Erro ao salvar. Verifique os campos.")
 
@@ -359,4 +355,4 @@ def manage_offers_view(request):
         "title": "Gerenciar Ofertas",
         "item_type": "Oferta",
     }
-    return render(request, "core/management_page_single_url.html", context)
+    return render(request, "core/manage_ofertas.html", context)

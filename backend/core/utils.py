@@ -111,13 +111,13 @@ def render_lojas_html(request, lojas_queryset):
         <div class="d-flex justify-content-between align-items-center mb-2 p-2 border-bottom">
             <span>{loja.nome} (<a href="{loja.url}" target="_blank">{loja.url}</a>)</span>
             <div>
-                <form method="post" action="{reverse('manage_stores')}" style="display:inline;">
+                <form method="post" action="{reverse('core:manage_stores')}" style="display:inline;">
                     <input type="hidden" name="csrfmiddlewaretoken" value="{get_token(request)}">
                     <input type="hidden" name="action" value="edit_store"> 
                     <input type="hidden" name="store_id" value="{loja.id}">
                     <button type="submit" class="btn btn-warning btn-sm me-2">Editar</button>
                 </form>
-                <form method="post" action="{reverse('manage_stores')}" style="display:inline;">
+                <form method="post" action="{reverse('core:manage_stores')}" style="display:inline;">
                     <input type="hidden" name="csrfmiddlewaretoken" value="{get_token(request)}">
                     <input type="hidden" name="action" value="delete_store">
                     <input type="hidden" name="store_id" value="{loja.id}">
