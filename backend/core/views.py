@@ -91,11 +91,16 @@ def product_catalog_view(request):
 
 
 def produto_view(request, product_id):
-    """Página que irá exibir um único produto.
-    Esta view apenas renderiza o 'esqueleto' da página.
-    O JavaScript nesta página será responsável por chamar a API para obter os dados.
-    """
-    return render(request, "core/produto.html", {"product_id": product_id})
+    # === CORREÇÃO AQUI: Passar a URL RELATIVA do proxy para o template ===
+    # Esta URL deve ser o prefixo do proxy + a URL da API real no Django
+    endpoint_url = reverse("core:get_product_data_api", args=[product_id]) # Ex: /api/produto-dados/1/
+    # O browser fará o fetch para /api/produto-dados/1/
+    # E o next.config.mjs vai reescrever para http://localhost:8000/api/produto-dados/1/
+
+    return render(request, "core/produto.html", {
+        "product_id": product_id,
+        "endpoint_url": endpoint_url, # Agora passa a URL relativa do proxy
+    })
 
 
 def get_product_data_api(request, product_id):

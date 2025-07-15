@@ -10,18 +10,14 @@ urlpatterns = [
     path("", views.home_view, name="home"),
     path("register/", views.register_view, name="register"),
     path("login/", views.login_view, name="login"),
-    path("produto/<int:product_id>/", views.produto_view, name="produto"),
+    path("produto/<int:product_id>/", views.produto_view, name="produto"), 
     path("buscar/", views.buscar_produtos_view, name="buscar_produtos"),
     path("solicitar-produto/", views.solicitar_produto_view, name="solicitar_produto"),
     path("logout/", views.logout_view, name="logout"),
     # --- API Endpoints (para o Frontend consumir) ---
     path("catalogo/", views.product_catalog_page_view, name="product_catalog_page"),
-    path("api/products/", views.product_catalog_view, name="product_catalog"),
-    path(
-        "api/product-data/<int:product_id>/",
-        views.get_product_data_api,
-        name="get_product_data_api",
-    ),
+    path("api/produto-dados/<int:product_id>/", views.get_product_data_api, name="get_product_data_api"),
+
     # core/product_catalog.html
     # --- URLs da Conta do Usuário Logado ---
     path("conta/perfil/", views.perfil_view, name="perfil"),

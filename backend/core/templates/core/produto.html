@@ -6,8 +6,8 @@
 {% block main_content %}
 <div class="container mt-5" id="product-detail">
 
-    {# ESSE SCRIPT CONTÉM O ID DO PRODUTO USADO NO JAVASCRIPT #}
     {{ product_id|json_script:"product-id-data" }}
+    {{ endpoint_url|json_script:"product-endpoint-data" }}
 
     <div class="row">
         <div class="col-md-6">
@@ -33,13 +33,18 @@
 {% block extra_js %}
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        // PEGANDO O ID DO PRODUTO DO TEMPLATE
-        const productId = JSON.parse(
-            document.getElementById("product-id-data").textContent
-        );
+        const productIdElement = document.getElementById("product-id-data");
+        const endpointElement = document.getElementById("product-endpoint-data");
 
-        // MONTANDO A URL DA API USANDO ESSE ID
-        const endpoint = `/api/produto-dados/${productId}/`;
+        if (!productIdElement || !endpointElement) {
+            console.error("❌ Elementos de dados não encontrados.");
+            return;
+        }
+
+        const productId = JSON.parse(productIdElement.textContent);
+        const endpoint = JSON.parse(endpointElement.textContent);
+
+
 
         fetch(endpoint)
             .then(response => {
@@ -47,26 +52,29 @@
                 return response.json();
             })
             .then(data => {
+
                 const product = data.product;
 
-                document.getElementById("product-image").src = product.imageUrl;
-                document.getElementById("product-name").textContent = product.name;
-                document.getElementById("product-description").textContent = product.description;
-                document.getElementById("product-category").textContent = product.category || "-";
-                document.getElementById("product-brand").textContent = product.brand || "-";
+                
+
+                document.getElementById("product-image").src = product.imagem_url;
+                document.getElementById("product-name").textContent = product.nome;
+                document.getElementById("product-description").textContent = product.descricao;
+                document.getElementById("product-category").textContent = product.categoria || "-";
+                document.getElementById("product-brand").textContent = product.marca || "-";
                 document.getElementById("product-price").textContent =
-                    (product.min_price !== null && product.min_price !== undefined)
-                        ? product.min_price.toFixed(2).replace('.', ',')
+                    (product.menor_preco !== null && product.menor_preco !== undefined)
+                        ? parseFloat(product.menor_preco).toFixed(2).replace('.', ',')
                         : "Indisponível";
 
                 const offersList = document.getElementById("offers-list");
-                offersList.innerHTML = ""; // Limpa qualquer conteúdo anterior
+                offersList.innerHTML = "";
 
-                if (product.offers && product.offers.length > 0) {
-                    product.offers.forEach(offer => {
+                if (product.ofertas && product.ofertas.length > 0) {
+                    product.ofertas.forEach(oferta => {
                         const li = document.createElement("li");
                         li.className = "list-group-item d-flex justify-content-between align-items-center";
-                        li.innerHTML = `<strong>${offer.store}</strong> <span>R$ ${offer.price.toFixed(2).replace('.', ',')}</span>`;
+                        li.innerHTML = `<strong>${oferta.loja}</strong> <span>R$ ${parseFloat(oferta.preco).toFixed(2).replace('.', ',')}</span>`;
                         offersList.appendChild(li);
                     });
                 } else {
@@ -77,7 +85,7 @@
                 }
             })
             .catch(error => {
-                console.error("Erro ao carregar produto:", error);
+                console.error("❌ Erro ao carregar produto:", error);
                 document.getElementById("product-detail").innerHTML = `
                     <div class="alert alert-danger" role="alert">
                         ${error.message}<br>

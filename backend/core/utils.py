@@ -27,7 +27,6 @@ def get_product_info(product_id):
             {
                 "loja": oferta.loja.nome,
                 "preco": f"{oferta.preco:.2f}",
-                "url_oferta": oferta.url_oferta,
                 "data_captura": oferta.data_captura.isoformat(),
             }
         )
