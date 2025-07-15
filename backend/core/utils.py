@@ -26,7 +26,7 @@ def get_product_info(product_id):
         ofertas_data.append(
             {
                 "loja": oferta.loja.nome,
-                "preco": f"{oferta.preco:.2f}",
+                "preco": float(f"{oferta.preco:.2f}"),
                 "data_captura": oferta.data_captura.isoformat(),
             }
         )

@@ -46,7 +46,7 @@ class ProductInfoUtilsTest(TestCase):
             adicionado_por=cls.admin_user
         )
         
-        # === CORREÇÃO AQUI: Usar datetime.timezone.utc para o tzinfo ===
+
         with patch('django.utils.timezone.now') as mock_now:
             # Para a primeira oferta
             mock_now.return_value = datetime.datetime(2025, 7, 14, 10, 0, 0, tzinfo=datetime.timezone.utc)
@@ -54,7 +54,7 @@ class ProductInfoUtilsTest(TestCase):
 
             # Para a segunda oferta
             mock_now.return_value = datetime.datetime(2025, 7, 14, 10, 5, 0, tzinfo=datetime.timezone.utc) # 5 minutos depois
-            Oferta.objects.create(produto=cls.produto_com_ofertas, loja=cls.loja_a, preco=decimal.Decimal('2300.00')) # Menor preço
+            Oferta.objects.create(produto=cls.produto_com_ofertas, loja=cls.loja_a, preco=decimal.Decimal('2300.50')) # Menor preço
 
             # Para a terceira oferta
             mock_now.return_value = datetime.datetime(2025, 7, 14, 10, 10, 0, tzinfo=datetime.timezone.utc) # 10 minutos depois
@@ -84,16 +84,16 @@ class ProductInfoUtilsTest(TestCase):
         product_info = get_product_info(self.produto_com_ofertas.id)
         self.assertIsNotNone(product_info)
         self.assertEqual(product_info['id'], self.produto_com_ofertas.id)
-        self.assertEqual(product_info['name'], 'Console de Videogame')
-        self.assertEqual(product_info['imageUrl'], 'http://img.com/console.jpg')
-        self.assertEqual(product_info['description'], 'Console de última geração para jogos.')
-        self.assertEqual(product_info['category'], 'Eletrônicos')
-        self.assertEqual(product_info['brand'], 'Sony')
-        self.assertEqual(product_info['min_price'], 2300.00)
-        self.assertIsInstance(product_info['offers'], list)
-        self.assertEqual(len(product_info['offers']), 3)
-        self.assertEqual(product_info['offers'][0]['price'], 2300.00)
-        self.assertEqual(product_info['offers'][0]['store'], 'Loja A')
+        self.assertEqual(product_info['nome'], 'Console de Videogame')
+        self.assertEqual(product_info['imagem_url'], 'http://img.com/console.jpg')
+        self.assertEqual(product_info['descricao'], 'Console de última geração para jogos.')
+        self.assertEqual(product_info['categoria'], 'Eletrônicos')
+        self.assertEqual(product_info['marca'], 'Sony')
+        self.assertEqual(product_info['menor_preco'], 2300.50)
+        self.assertIsInstance(product_info['ofertas'], list)
+        self.assertEqual(len(product_info['ofertas']), 3)
+        self.assertEqual(product_info['ofertas'][0]['preco'], 2300.50)
+        self.assertEqual(product_info['ofertas'][0]['loja'], 'Loja A')
 
     def test_get_product_info_non_existing_product(self):
         product_info = get_product_info(99999)
@@ -103,26 +103,26 @@ class ProductInfoUtilsTest(TestCase):
         product_info = get_product_info(self.produto_sem_ofertas.id)
         self.assertIsNotNone(product_info)
         self.assertEqual(product_info['id'], self.produto_sem_ofertas.id)
-        self.assertIsNone(product_info['min_price'])
-        self.assertEqual(len(product_info['offers']), 0)
+        self.assertIsNone(product_info['menor_preco'])
+        self.assertEqual(len(product_info['ofertas']), 0)
 
     def test_search_products_by_name(self):
         results = search_products('console')
         self.assertTrue(len(results) >= 1)
-        self.assertIn('Console de Videogame', [p['name'] for p in results])
-        self.assertEqual(results[0]['min_price'], 2300.00)
+        self.assertIn('Console de Videogame', [p['nome'] for p in results])
+        self.assertEqual(results[0]['menor_preco'], 2300.50)
 
         results = search_products('mouse')
         self.assertTrue(len(results) >= 1)
-        self.assertIn('Mouse Gamer Wireless', [p['name'] for p in results])
-        self.assertEqual(results[0]['min_price'], 150.00)
+        self.assertIn('Mouse Gamer Wireless', [p['nome'] for p in results])
+        self.assertEqual(results[0]['menor_preco'], 150.00)
 
     def test_search_products_by_description_and_category(self):
         results_desc = search_products('geração')
-        self.assertIn('Console de Videogame', [p['name'] for p in results_desc])
+        self.assertIn('Console de Videogame', [p['nome'] for p in results_desc])
 
         results_cat = search_products('livros')
-        self.assertIn('Livro de Programação', [p['name'] for p in results_cat])
+        self.assertIn('Livro de Programação', [p['nome'] for p in results_cat])
 
     def test_search_products_no_results(self):
         results = search_products('produtoinexistente123')
@@ -135,8 +135,8 @@ class ProductInfoUtilsTest(TestCase):
         
         console_in_results = next((p for p in results if p['id'] == self.produto_com_ofertas.id), None)
         self.assertIsNotNone(console_in_results)
-        self.assertEqual(console_in_results['min_price'], 2300.00)
+        self.assertEqual(console_in_results['menor_preco'], 2300.50)
 
         livro_in_results = next((p for p in results if p['id'] == self.produto_sem_ofertas.id), None)
         self.assertIsNotNone(livro_in_results)
-        self.assertIsNone(livro_in_results['min_price'])
+        self.assertIsNone(livro_in_results['menor_preco'])
