@@ -1,0 +1,37 @@
+{% extends "core/base.html" %}
+
+{% block title %}Gerenciar Lojas{% endblock %}
+
+{% block main_content %}
+<div class="container mt-4">
+  <h2 class="mb-4">Gerenciar Lojas</h2>
+
+  {% if additional_info_html %}
+    <div class="alert alert-info">
+      {{ additional_info_html|safe }}
+    </div>
+  {% endif %}
+
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post" action="{% url 'manage_stores' %}" class="mb-4">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="hidden" name="action" value="add_or_update_store">
+    <button type="submit" class="btn btn-primary">Salvar Loja</button>
+  </form>
+
+  <hr />
+
+  <h4>Lojas Cadastradas</h4>
+  {% if existing_items_html %}
+    {{ existing_items_html|safe }}
+  {% else %}
+    <p>Nenhuma loja cadastrada.</p>
+  {% endif %}
+</div>
+{% endblock %}
