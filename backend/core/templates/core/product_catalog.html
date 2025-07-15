@@ -10,7 +10,7 @@
             <div class="col-md-12">
                 <div class="section-header d-flex flex-wrap justify-content-between mb-4">
                     <h2 class="section-title">Nosso Catálogo</h2>
-                    <div class="w-50">
+                    <div class="w-50 mt-2px">
                         <form id="catalog-search-form" class="d-flex" role="search">
                             <input id="catalog-search-input" class="form-control me-2" type="search" placeholder="Buscar no catálogo..." aria-label="Search">
                             <button class="btn btn-primary" type="submit">Buscar</button>
@@ -38,7 +38,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     
     // --- Variáveis Globais com dados do Django ---
-    const catalogApiUrl = "{% url 'core:product_catalog' %}";
+    const catalogApiUrl = "{% url 'core:api_product_list' %}";
     const defaultImageUrl = "{% static 'foodmart/images/default-product.png' %}"; 
 
     const productGrid = document.getElementById('product-grid');

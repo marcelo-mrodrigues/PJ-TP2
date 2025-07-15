@@ -4,7 +4,7 @@
 {% block title %}Aprovar Produtos - FoodMart{% endblock %}
 
 {% block main_content %}
-<div class="container my-5"> {# Usamos container do Bootstrap para centralizar e dar padding #}
+<div class="container my-5"> {# Container do Bootstrap para centralizar e dar padding #}
     <div class="row justify-content-center">
         <div class="col-lg-10 col-md-12"> {# Ajuste a largura da tabela #}
             <h1 class="text-center mb-4">Aprovar Produtos Indicados</h1>
@@ -20,15 +20,15 @@
             {% if produtos %}
                 <div class="table-responsive"> {# Torna a tabela responsiva em telas pequenas #}
                     <table class="table table-hover table-bordered align-middle"> {# Classes de tabela do Bootstrap #}
-                        <thead class="table-dark"> {# Cabeçalho da tabela escuro #}
+                        <thead class="table-light"> {# Cabeçalho da tabela escuro #}
                             <tr>
-                                <th scope="col"># ID</th> {# Adicionei ID para facilitar #}
-                                <th scope="col">Nome</th>
-                                <th scope="col">Descrição</th> {# Adicionei Descrição para mais contexto #}
-                                <th scope="col">Categoria</th>
-                                <th scope="col">Marca</th>
-                                <th scope="col">Adicionado Por</th> {# Adicionado para mostrar quem solicitou #}
-                                <th scope="col" class="text-center">Ação</th>
+                                <th scope="col" style="text-align: center; vertical-align: middle; min-width: 80px;"># ID</th>
+                                <th scope="col" style="text-align: center; vertical-align: middle; min-width: 150px;">Nome</th>
+                                <th scope="col" style="text-align: center; vertical-align: middle; min-width: 250px;">Descrição</th> {# Aumentei para descrição #}
+                                <th scope="col" style="text-align: center; vertical-align: middle; min-width: 100px;">Categoria</th>
+                                <th scope="col" style="text-align: center; vertical-align: middle; min-width: 100px;">Marca</th>
+                                <th scope="col" style="text-align: center; vertical-align: middle; min-width: 120px;">Adicionado Por</th>
+                                <th scope="col" style="text-align: center; vertical-align: middle; min-width: 100px;">Ação</th>
                             </tr>
                         </thead>
                         <tbody>
