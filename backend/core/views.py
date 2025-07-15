@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.urls import reverse
 
+
 # Funções e modelos do seu projeto
 from .utils import get_product_info, search_products
 from .models import Produto, Oferta, Categoria, Marca, Loja
@@ -116,16 +117,53 @@ def get_product_data_api(request, product_id):
 # ================================================================= #
 # (Todas as suas views de placeholder foram adicionadas)
 
-
+# login required?
 def solicitar_produto_view(request):
-    return render(request, "core/placeholder.html", {"title": "Solicitar um Produto"})
+    """Renderiza o formulário de solicitação de produto e processa o envio."""
+    if request.method == "POST":
+        nome = request.POST.get("nome")
+        descricao = request.POST.get("descricao")
+        imagem_url = request.POST.get("imagem_url")
+        categoria_nome = request.POST.get("categoria")
+        marca_nome = request.POST.get("marca")
 
+        if not nome:
+            messages.error(request, "O nome do produto é obrigatório.")
+            return render(request, "core/solicitar_produto.html")
 
+        categoria, _ = Categoria.objects.get_or_create(nome=categoria_nome or "Outros")
+        marca, _ = Marca.objects.get_or_create(nome=marca_nome or "Genérica")
+
+        Produto.objects.create(
+            nome=nome,
+            descricao=descricao,
+            imagem_url=imagem_url,
+            categoria=categoria,
+            marca=marca,
+            adicionado_por=request.user if request.user.is_authenticated else None
+        )
+
+        messages.success(request, "Produto solicitado com sucesso!")
+        return redirect("core:ver_solicitacao_produtos")
+
+    return render(request, "core/solicitar_produto.html")
+
+# adm required?
 def aprovar_produto_view(request):
-    return render(
-        request, "core/placeholder.html", {"title": "Aprovar Produtos Indicados"}
-    )
+    if request.method == "POST":
+        produto_id = request.POST.get("produto_id")
+        produto = get_object_or_404(Produto, id=produto_id)
 
+        produto.aprovado = True
+        produto.save()
+
+        messages.success(request, f"Produto '{produto.nome}' aprovado com sucesso!")
+        return redirect("core:ver_aprovar_produtos") 
+
+    produtos_pendentes = Produto.objects.filter(aprovado=False)
+    return render(
+        request, "core/aprovar_produto.html", {"produtos": produtos_pendentes}
+    )
 
 def buscar_produtos_view(request):
     # Nota: a busca da API já é feita pela 'product_catalog_view'.

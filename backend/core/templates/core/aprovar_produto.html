@@ -1,16 +1,50 @@
-{# core/templates/core/placeholder_template.html (Exemplo para as outras páginas) #}
-
 {% extends "core/base.html" %}
 
-{# Mude o título para cada página #}
-{% block title %}Página em Construção - FoodMart - aprovar_produto{% endblock %}
+{% block title %}Aprovar Produtos Indicados - FoodMart{% endblock %}
 
 {% block main_content %}
-<section class="py-5">
-    <div class="container text-center">
-        {# Mude o h1 para cada página #}
-        <h1 class="display-4">Página em Construção</h1>
-        <p class="lead">Esta funcionalidade estará disponível em breve!</p>
-    </div>
-</section>
+<div class="max-w-4xl mx-auto py-8 px-4">
+    <h1 class="text-2xl font-bold mb-6">Aprovar Produtos Indicados</h1>
+
+    {% if messages %}
+        <ul class="mb-4">
+            {% for message in messages %}
+                <li class="text-{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if produtos %}
+        <table class="w-full table-auto border">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="px-4 py-2">Nome</th>
+                    <th class="px-4 py-2">Categoria</th>
+                    <th class="px-4 py-2">Marca</th>
+                    <th class="px-4 py-2">Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for produto in produtos %}
+                <tr class="border-t">
+                    <td class="px-4 py-2">{{ produto.nome }}</td>
+                    <td class="px-4 py-2">{{ produto.categoria.nome }}</td>
+                    <td class="px-4 py-2">{{ produto.marca.nome }}</td>
+                    <td class="px-4 py-2">
+                        <form method="post" class="inline">
+                            {% csrf_token %}
+                            <input type="hidden" name="produto_id" value="{{ produto.id }}">
+                            <button type="submit" class="bg-green-600 text-black px-3 py-1 rounded">
+                                Aprovar
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-gray-600">Nenhum produto aguardando aprovação.</p>
+    {% endif %}
+</div>
 {% endblock %}

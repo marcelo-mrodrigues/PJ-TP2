@@ -88,6 +88,7 @@ class Produto(models.Model):
         verbose_name="Adicionado Por",
     )
     data_adicao = models.DateTimeField(auto_now_add=True, verbose_name="Data de Adição")
+    aprovado = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "Produto"

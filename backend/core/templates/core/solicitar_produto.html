@@ -1,16 +1,28 @@
-{# core/templates/core/placeholder_template.html (Exemplo para as outras páginas) #}
-
+{# core/templates/core/solicitar_produto.html #}
 {% extends "core/base.html" %}
 
-{# Mude o título para cada página #}
-{% block title %}Página em Construção - FoodMart - solicitar_produto{% endblock %}
+{% block title %}Solicitar Produto - FoodMart{% endblock %}
 
 {% block main_content %}
-<section class="py-5">
-    <div class="container text-center">
-        {# Mude o h1 para cada página #}
-        <h1 class="display-4">Página em Construção</h1>
-        <p class="lead">Esta funcionalidade estará disponível em breve!</p>
-    </div>
-</section>
+<div class="max-w-2xl mx-auto py-8 px-4">
+    <h1 class="text-2xl font-bold mb-4">Solicitar Novo Produto</h1>
+
+    {% if messages %}
+        <ul class="mb-4">
+            {% for message in messages %}
+                <li class="text-{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <input type="text" name="nome" placeholder="Nome do Produto" class="w-full border p-2 rounded" required>
+        <textarea name="descricao" placeholder="Descrição" class="w-full border p-2 rounded" rows="4"></textarea>
+        <input type="url" name="imagem_url" placeholder="URL da Imagem" class="w-full border p-2 rounded"> <!-- OU BINARIO-->
+        <input type="text" name="categoria" placeholder="Categoria" class="w-full border p-2 rounded">
+        <input type="text" name="marca" placeholder="Marca" class="w-full border p-2 rounded">
+        <button type="submit" class="bg-blue-600 text-black px-4 py-2 rounded">Enviar Solicitação</button>
+    </form>
+</div>
 {% endblock %}

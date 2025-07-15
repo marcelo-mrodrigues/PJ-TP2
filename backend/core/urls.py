@@ -27,12 +27,8 @@ urlpatterns = [
     path("manage/stores/", views.manage_stores_view, name="manage_stores"),
     path("manage/products/", views.manage_products_view, name="manage_products"),
     path("manage/offers/", views.manage_offers_view, name="manage_offers"),
-    path(
-        "manage/approve-products/", views.aprovar_produto_view, name="aprovar_produto"
-    ),
-    path(
-        "manage/product-requests/",
-        views.solicitacao_produto_view,
-        name="ver_solicitacao_produtos",
-    ),
+
+    path("manage/approve-products/", views.aprovar_produto_view, name="ver_aprovar_produtos"),
+    
+    path("manage/product-requests/", views.solicitar_produto_view, name="ver_solicitacao_produtos"),
 ]
