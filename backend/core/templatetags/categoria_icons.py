@@ -5,7 +5,7 @@ register = template.Library()
 # Dicionário de emojis para cada categoria
 ICONS = {
     "Açougue & Peixaria": "🥩",
-    "alimentos": "🍞",
+    "Alimentos": "🍞",
     "Bebê & Infantil": "🍼",
     "Bebida": "🥤",
     "Casa": "🏠",
