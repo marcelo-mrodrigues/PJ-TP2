@@ -1,5 +1,5 @@
 {% extends "core/base.html" %}
-{% load static %}
+{% load static %}  {# <-- ESTA LINHA É A SOLUÇÃO PARA O ERRO #}
 
 {% block title %}Catálogo de Produtos - FoodMart{% endblock %}
 
@@ -38,7 +38,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     
     // --- Variáveis Globais com dados do Django ---
-    const catalogApiUrl = "{% url 'core:api_product_list' %}";
+    const catalogApiUrl = "{% url 'core:product_catalog' %}";
     const defaultImageUrl = "{% static 'foodmart/images/default-product.png' %}"; 
 
     const productGrid = document.getElementById('product-grid');
@@ -72,7 +72,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         <h5 class="card-title">${product.nome}</h5>
                         <p class="card-text text-muted small mb-2">${product.marca || 'Marca não informada'}</p>
                         ${priceDisplay}
-                        <a href="/produto/${product.id}/" class="btn btn-primary mt-auto">Ver Detalhes</a>
+                        <div class="mt-auto">
+                            <div class="d-grid gap-2">
+                                <a href="/produto/${product.id}/" class="btn btn-outline-secondary btn-sm">Ver Detalhes</a>
+                                <button class="btn btn-primary add-to-cart-btn" data-product-id="${product.id}">
+                                    Adicionar ao Carrinho
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;

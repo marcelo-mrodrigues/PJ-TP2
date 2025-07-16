@@ -1,0 +1,22 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{# O título da página será passado pela view #}
+{% block title %}{{ title|default:"Página em Construção" }} - FoodMart{% endblock %}
+
+{% block main_content %}
+<section class="py-5">
+    <div class="container text-center" style="min-height: 40vh; display: flex; flex-direction: column; justify-content: center;">
+        
+        {# A view passará o título específico da página aqui #}
+        <h1 class="display-4">{{ title|default:"Página em Construção" }}</h1>
+        
+        <p class="lead text-muted mt-3">Esta funcionalidade estará disponível em breve!</p>
+        
+        <div class="mt-4">
+            <a href="{% url 'core:home' %}" class="btn btn-primary">Voltar para a Página Inicial</a>
+        </div>
+        
+    </div>
+</section>
+{% endblock %}
