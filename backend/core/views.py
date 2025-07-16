@@ -16,7 +16,7 @@ from .models import Produto
 
 # Funções e modelos do seu projeto
 from .utils import get_product_info, search_products, merge_session_cart_to_db
-from .models import Produto, Oferta, Categoria, Marca, Loja, ItemComprado, ListaCompra, ItemLista
+from .models import Produto, Oferta, Categoria, Marca, Loja, ItemComprado, ListaCompra, ItemLista, Comentario
 from .forms import (
     CustomUserCreationForm,
     CustomAuthenticationForm,
@@ -388,21 +388,29 @@ def product_catalog_view(request):
 
 
 def produto_view(request, product_id):
-    endpoint_url = reverse("core:get_product_data_api", args=[product_id])
     produto = get_object_or_404(Produto, id=product_id)
-    comentarios = produto.comentarios.select_related("usuario").all()
-    form_comentario = ComentarioForm()
+    comentarios = Comentario.objects.filter(produto=produto)
 
-    return render(
-        request,
-        "core/produto.html",
-        {
-            "product_id": product_id,
-            "endpoint_url": endpoint_url,
-            "comentarios": comentarios,
-            "form_comentario": form_comentario,
-        },
-    )
+    if request.method == "POST" and request.POST.get("action") == "add_comentario":
+        form = ComentarioForm(request.POST)
+        if form.is_valid():
+            comentario = form.save(commit=False)
+            comentario.usuario = request.user
+            comentario.produto = produto
+            comentario.save()
+            messages.success(request, "Comentário enviado com sucesso!")
+            return redirect("core:produto", product_id=product_id)
+    else:
+        form = ComentarioForm()
+
+    endpoint_url = reverse("core:get_product_data_api", args=[product_id])
+
+    return render(request, "core/produto.html", {
+        "product_id": product_id,
+        "endpoint_url": endpoint_url,
+        "comentarios": comentarios,
+        "comentario_form": form,
+    })
 
 def adicionar_comentario_view(request, product_id):
     produto = get_object_or_404(Produto, id=product_id)
@@ -419,6 +427,13 @@ def adicionar_comentario_view(request, product_id):
             messages.error(request, "Erro ao enviar comentário.")
     return redirect("core:produto", product_id=product_id)
 
+def excluir_comentario_view(request, comentario_id):
+    comentario = get_object_or_404(Comentario, id=comentario_id)
+    produto_id = comentario.produto.id if comentario.produto else None
+    comentario.delete()
+    messages.success(request, "Comentário excluído com sucesso.")
+    return redirect("core:produto", product_id=produto_id)
+
 def get_product_data_api(request, product_id):
     """API: Retorna os detalhes de um produto específico em formato JSON."""
     product_data = get_product_info(product_id)
@@ -432,27 +447,31 @@ def get_product_data_api(request, product_id):
 # ================================================================= #
 # (Todas as suas views de placeholder foram adicionadas)
 
-@login_required(
-    login_url="/login/"
-)  # Redireciona para a URL de login se o usuário não estiver autenticado
+@login_required(login_url="/login/")
 def solicitar_produto_view(request):
     """
     Renderiza o formulário de solicitação de produto e processa o envio.
     Apenas usuários autenticados podem acessar esta view.
     """
+    categorias = Categoria.objects.all()
+    marcas = Marca.objects.all()
+
     if request.method == "POST":
         nome = request.POST.get("nome")
         descricao = request.POST.get("descricao")
         imagem_url = request.POST.get("imagem_url")
-        categoria_nome = request.POST.get("categoria")
-        marca_nome = request.POST.get("marca")
+        categoria_id = request.POST.get("categoria_id")
+        marca_id = request.POST.get("marca_id")
 
         if not nome:
             messages.error(request, "O nome do produto é obrigatório.")
-            return render(request, "core/solicitar_produto.html")
+            return render(request, "core/solicitar_produto.html", {
+                "categorias": categorias,
+                "marcas": marcas,
+            })
 
-        categoria, _ = Categoria.objects.get_or_create(nome=categoria_nome or "Outros")
-        marca, _ = Marca.objects.get_or_create(nome=marca_nome or "Genérica")
+        categoria = get_object_or_404(Categoria, id=categoria_id)
+        marca = get_object_or_404(Marca, id=marca_id)
 
         Produto.objects.create(
             nome=nome,
@@ -466,7 +485,10 @@ def solicitar_produto_view(request):
         messages.success(request, "Produto solicitado com sucesso!")
         return redirect("core:ver_solicitacao_produtos")
 
-    return render(request, "core/solicitar_produto.html")
+    return render(request, "core/solicitar_produto.html", {
+        "categorias": categorias,
+        "marcas": marcas,
+    })
 
 
 @staff_member_required(

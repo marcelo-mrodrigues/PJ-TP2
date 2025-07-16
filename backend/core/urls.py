@@ -15,7 +15,7 @@ urlpatterns = [
     path("produto/<int:product_id>/comentar/", views.adicionar_comentario_view, name="comentar_produto"),
     path("buscar/", views.buscar_produtos_view, name="buscar_produtos"),
     path("solicitar-produto/", views.solicitar_produto_view, name="solicitar_produto"),
-
+    path("comentario/<int:comentario_id>/excluir/", views.excluir_comentario_view, name="excluir_comentario"),
     # --- Páginas e APIs do Catálogo ---
     path("catalogo/", views.product_catalog_page_view, name="product_catalog_page"),
     path("api/products/", views.product_catalog_view, name="product_catalog"),
