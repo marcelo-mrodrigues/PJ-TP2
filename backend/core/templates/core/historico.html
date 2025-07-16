@@ -1,0 +1,53 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Histórico de Compras - FoodMart{% endblock %}
+
+{% block main_content %}
+<section class="py-5">
+<div class="container">
+    <div class="row">
+        <div class="col-12 text-center mb-4">
+            <h1 class="display-5">Histórico de Compras</h1>
+            <p class="lead">Veja os itens que você já comprou.</p>
+        </div>
+    </div>
+
+    {% if itens_comprados %}
+        <div class="row">
+            <div class="col-12">
+                <ul class="list-group">
+                    {% for item in itens_comprados %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>
+                                    {% if item.produto %}
+                                      <a href="{% url 'core:produto' item.produto.id %}" class="text-decoration-none">
+                                        {{ item.produto.nome }}
+                                      </a>
+                                    {% else %}
+                                      [Produto Removido]
+                                    {% endif %}
+                                  </strong><br>
+                                <small class="text-muted">
+                                    Loja: {{ item.loja.nome|default:"[Loja Desconhecida]" }} |
+                                    Preço: R$ {{ item.preco_pago }} |
+                                    Data: {{ item.data_compra }}
+                                </small>
+                            </div>
+                            {% if item.produto and item.produto.imagem_url %}
+                                <img src="{{ item.produto.imagem_url }}" alt="Imagem do Produto" width="60">
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center mt-4">
+            Você ainda não comprou nenhum produto.
+        </div>
+    {% endif %}
+</div>
+</section>
+{% endblock %}

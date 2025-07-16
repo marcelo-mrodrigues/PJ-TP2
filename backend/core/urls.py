@@ -30,7 +30,7 @@ urlpatterns = [
     # --- URLs da Conta do Usuário Logado ---
     path("conta/perfil/", views.perfil_view, name="perfil"),
     path("conta/lista-compras/", views.lista_de_compras_view, name="lista_de_compras"),
-    #path("conta/historico-compras/", views.historico_view, name="historico"),
+    path("conta/historico-compras/", views.historico_view, name="historico"),
     path("checkout/", views.checkout_view, name="checkout"),
     path("listas/", views.manage_shopping_lists_view, name="manage_shopping_lists"),
     path("lista/<int:item_id>/remover_item/", views.deletar_item_lista, name="deletar_item_lista"),

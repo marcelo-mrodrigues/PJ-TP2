@@ -517,7 +517,21 @@ def perfil_view(request):
 def lista_de_compras_view(request):
     return render(request, "core/placeholder.html", {"title": "Minha Lista de Compras"})
 
-
+@login_required
+def historico_view(request):
+    """
+    Exibe o histórico de compras do usuário autenticado.
+    """
+    itens_comprados = (
+        ItemComprado.objects.filter(usuario=request.user)
+        .select_related("produto", "loja")
+        .order_by("-data_compra")
+    )
+    return render(
+        request,
+        "core/historico.html",
+        {"itens_comprados": itens_comprados, "title": "Histórico de Compras"},
+    )
 
 
 # ================================================================= #
