@@ -1,11 +1,10 @@
 {% extends "core/base.html" %}
 {% load static %}
-{% load categoria_icons %} {# Garanta que este tem o caminho correto para o seu templatetag de emojis #}
+{% load categoria_icons %}
 
 {% block title %}Página Inicial - FoodMart{% endblock %}
 
 {% block main_content %}
-{# O conteúdo específico da Home Page começa aqui #}
 <section class="py-5 overflow-hidden">
   <div class="container-fluid">
     <div class="row">
@@ -22,22 +21,20 @@
         </div>
       </div>
     </div>
-    
-    {# SEÇÃO DO CARROSSEL DE CATEGORIAS (SWIPER) - INICIALMENTE VISÍVEL #}
-    <div class="row" id="category-carousel-section"> {# Adicionado ID para controle JS #}
+
+    <!-- CARROSSEL DE CATEGORIAS -->
+    <div class="row" id="category-carousel-section">
       <div class="col-md-12">
         <div class="category-carousel swiper">
           <div class="swiper-wrapper">
             {% for categoria in categorias %}
-              <a href="#" class="nav-link category-item swiper-slide">
-                {# EXIBIÇÃO DO EMOJI AQUI. Mantenha o span #}
+              <a href="{% url 'core:product_catalog_page' %}?categoria={{ categoria.nome|urlencode }}" class="nav-link category-item swiper-slide">
                 <span class="category-icon" style="font-size: 3em; display: block; margin: 0 auto;">{% icon_categoria categoria.nome %}</span>
                 <h3 class="category-title">{{ categoria.nome }}</h3>
               </a>
-            {% empty %} {# Bloco para caso NÃO HAJA categorias no banco #}
+            {% empty %}
               <div class="swiper-slide text-center p-3">
-                <p>Nenhuma categoria encontrada no momento.</p>
-                <p>Por favor, adicione categorias via painel de administração.</p>
+                <p>Nenhuma categoria encontrada.</p>
               </div>
             {% endfor %}
           </div>
@@ -45,71 +42,53 @@
       </div>
     </div>
 
-    {# SEÇÃO DA LISTA COMPLETA DE CATEGORIAS (INICIALMENTE OCULTA) #}
-    <div id="categoria-lista-completa" class="row d-none"> {# d-none inicial do Bootstrap #}
-        {% for categoria in categorias %}
-          <div class="col-md-3 col-sm-6 mb-4">
-            <a href="#" class="nav-link category-item text-center d-block"> 
-              {# EXIBIÇÃO DO EMOJI AQUI #}
-              <span class="category-icon" style="font-size: 4em; display: block; margin: 0 auto 10px auto;">{% icon_categoria categoria.nome %}</span>
-              <h3 class="category-title mt-2">{{ categoria.nome }}</h3>
-            </a>
-          </div>
-        {% endfor %}
+    <!-- LISTA COMPLETA DE CATEGORIAS -->
+    <div id="categoria-lista-completa" class="row d-none">
+      {% for categoria in categorias %}
+        <div class="col-md-3 col-sm-6 mb-4">
+          <a href="{% url 'core:product_catalog_page' %}?categoria={{ categoria.nome|urlencode }}" class="nav-link category-item text-center d-block">
+            <span class="category-icon" style="font-size: 4em; display: block; margin: 0 auto 10px auto;">{% icon_categoria categoria.nome %}</span>
+            <h3 class="category-title mt-2">{{ categoria.nome }}</h3>
+          </a>
+        </div>
+      {% endfor %}
     </div>
-
   </div>
 </section>
-
-{# Adicione outras seções da sua página inicial aqui #}
-
 {% endblock %}
 
-
 {% block extra_js %}
-{# O Swiper.js já está no base.html, então você só precisa do script de inicialização #}
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const verTodasBtn = document.getElementById("ver-todas-btn");
-    const categoryCarouselSection = document.getElementById("category-carousel-section"); 
-    const listaCompleta = document.getElementById("categoria-lista-completa");
+document.addEventListener("DOMContentLoaded", function () {
+  const verTodasBtn = document.getElementById("ver-todas-btn");
+  const categoryCarouselSection = document.getElementById("category-carousel-section");
+  const listaCompleta = document.getElementById("categoria-lista-completa");
 
-    // Inicializa o Swiper
-    const swiperElement = document.querySelector('.category-carousel');
-    if (swiperElement) { // Verifica se o elemento existe antes de inicializar
-        new Swiper(swiperElement, {
-            slidesPerView: 5,
-            spaceBetween: 30,
-            navigation: {
-                nextEl: '.category-carousel-next',
-                prevEl: '.category-carousel-prev',
-            },
-            breakpoints: {
-                320: {
-                  slidesPerView: 2,
-                  spaceBetween: 15
-                },
-                768: {
-                  slidesPerView: 3,
-                  spaceBetween: 20
-                },
-                992: {
-                  slidesPerView: 5,
-                  spaceBetween: 30
-                }
-            }
-        });
-    }
+  if (verTodasBtn) {
+    verTodasBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      categoryCarouselSection.classList.add("d-none");
+      listaCompleta.classList.remove("d-none");
+      this.classList.add("d-none");
+    });
+  }
 
-    // Lógica do botão "Ver todas"
-    if (verTodasBtn) {
-        verTodasBtn.addEventListener("click", function (e) {
-            e.preventDefault();
-            categoryCarouselSection.classList.add("d-none");
-            listaCompleta.classList.remove("d-none");
-            this.classList.add("d-none"); // 'this' refere-se ao elemento clicado (verTodasBtn)
-        });
-    }
-  });
+  const swiperElement = document.querySelector('.category-carousel');
+  if (swiperElement) {
+    new Swiper(swiperElement, {
+      slidesPerView: 5,
+      spaceBetween: 30,
+      navigation: {
+        nextEl: '.category-carousel-next',
+        prevEl: '.category-carousel-prev',
+      },
+      breakpoints: {
+        320: { slidesPerView: 2, spaceBetween: 15 },
+        768: { slidesPerView: 3, spaceBetween: 20 },
+        992: { slidesPerView: 5, spaceBetween: 30 }
+      }
+    });
+  }
+});
 </script>
 {% endblock %}

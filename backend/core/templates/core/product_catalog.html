@@ -1,5 +1,5 @@
 {% extends "core/base.html" %}
-{% load static %}  {# <-- ESTA LINHA É A SOLUÇÃO PARA O ERRO #}
+{% load static %}
 
 {% block title %}Catálogo de Produtos - FoodMart{% endblock %}
 
@@ -11,8 +11,8 @@
                 <div class="section-header d-flex flex-wrap justify-content-between mb-4">
                     <h2 class="section-title">Nosso Catálogo</h2>
                     <div class="w-50 mt-2px">
-                        <form id="catalog-search-form" class="d-flex" role="search">
-                            <input id="catalog-search-input" class="form-control me-2" type="search" placeholder="Buscar no catálogo..." aria-label="Search">
+                        <form id="catalog-search-form" class="d-flex" role="search" action="" method="get">
+                            <input id="catalog-search-input" class="form-control me-2" type="search" name="q" placeholder="Buscar no catálogo..." aria-label="Search" value="{{ request.GET.q }}">
                             <button class="btn btn-primary" type="submit">Buscar</button>
                         </form>
                     </div>
@@ -32,19 +32,23 @@
 </section>
 {% endblock %}
 
-
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // --- Variáveis Globais com dados do Django ---
+document.addEventListener('DOMContentLoaded', function () {
+
     const catalogApiUrl = "{% url 'core:product_catalog' %}";
     const defaultImageUrl = "{% static 'foodmart/images/default-product.png' %}"; 
 
     const productGrid = document.getElementById('product-grid');
-    const searchForm = document.getElementById('catalog-search-form');
-    const searchInput = document.getElementById('catalog-search-input');
-    
+
+    function getQueryParams() {
+        const params = new URLSearchParams(window.location.search);
+        return {
+            q: params.get('q') || '',
+            categoria: params.get('categoria') || ''
+        };
+    }
+
     function renderProducts(products) {
         productGrid.innerHTML = '';
 
@@ -58,7 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
             productCol.className = 'col-lg-3 col-md-4 col-sm-6 mb-4';
             
             const imageUrl = product.imagem_url || defaultImageUrl;
-            
             const priceDisplay = product.menor_preco 
                 ? `<p class="card-text fw-bold fs-5 text-primary">A partir de R$ ${parseFloat(product.menor_preco).toFixed(2).replace('.', ',')}</p>`
                 : '<p class="card-text text-muted small">Preço indisponível</p>';
@@ -87,12 +90,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    async function fetchProducts(query = '') {
+    async function fetchProducts(query = '', categoria = '') {
         productGrid.innerHTML = `<div class="col-12 text-center" id="loading-state"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Carregando...</span></div><p class="mt-2">Buscando produtos...</p></div>`;
 
         let apiUrl = catalogApiUrl;
+        const params = [];
+
         if (query) {
-            apiUrl += `?q=${encodeURIComponent(query)}`;
+            params.push(`q=${encodeURIComponent(query)}`);
+        }
+        if (categoria) {
+            params.push(`categoria=${encodeURIComponent(categoria)}`);
+        }
+
+        if (params.length > 0) {
+            apiUrl += `?${params.join('&')}`;
         }
 
         try {
@@ -105,12 +117,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    searchForm.addEventListener('submit', function(event) {
-        event.preventDefault(); 
-        fetchProducts(searchInput.value);
+    // Lógica de busca
+    const searchForm = document.getElementById('catalog-search-form');
+    const searchInput = document.getElementById('catalog-search-input');
+
+    searchForm.addEventListener('submit', function (event) {
+        // Redireciona com GET para atualizar a URL corretamente
+        event.preventDefault();
+        const query = searchInput.value;
+        const params = new URLSearchParams(window.location.search);
+        params.set('q', query);
+        window.location.search = params.toString(); // força reload com os filtros
     });
 
-    fetchProducts();
+    const { q, categoria } = getQueryParams();
+    fetchProducts(q, categoria);
 });
 </script>
 {% endblock %}

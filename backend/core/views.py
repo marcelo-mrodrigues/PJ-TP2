@@ -156,38 +156,7 @@ def finalizar_compra_view(request):
 
     return redirect("core:checkout")
 
-@login_required
-def finalizar_compra_view(request):
-    if request.method == "POST":
-        cart = request.session.get("cart", {})
 
-        if not cart:
-            messages.error(request, "Seu carrinho está vazio.")
-            return redirect("core:product_catalog_page")
-
-        for product_id, item_data in cart.items():
-            try:
-                produto = Produto.objects.get(id=product_id)
-                oferta = produto.ofertas.order_by("preco").first()
-
-                ItemComprado.objects.create(
-                    usuario=request.user,
-                    produto=produto,
-                    loja=oferta.loja if oferta else None,
-                    preco_pago=oferta.preco if oferta else 0.0,
-                    data_compra=date.today(),
-                )
-            except Produto.DoesNotExist:
-                continue  
-
-        # Limpa carrinho
-        del request.session["cart"]
-        messages.success(request, "Compra finalizada com sucesso!")
-
-        return redirect("core:home")
-
-    # Se alguém acessar via GET, redireciona para o checkout
-    return redirect("core:checkout")
 
 
 def remove_from_cart_view(request):
@@ -381,9 +350,14 @@ def get_cart_view(request):
 
 def product_catalog_view(request):
     """API: Retorna os dados do catálogo de produtos em formato JSON."""
-    search_query = request.GET.get("q", "")
-    produtos_data = search_products(search_query)
-    return JsonResponse({"products": produtos_data})
+    query = request.GET.get("q", "")
+    categoria_nome = request.GET.get("categoria")
+
+    if categoria_nome:
+        query = categoria_nome  # Força a busca pelo nome da categoria
+
+    produtos = search_products(query=query)
+    return JsonResponse({"products": produtos})
 
 
 

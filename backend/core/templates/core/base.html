@@ -74,14 +74,25 @@
           <div class="col-sm-6 offset-sm-2 offset-md-0 col-lg-5 d-none d-lg-block">
             <div class="search-bar row bg-light p-2 my-2 rounded-4">
               <div class="col-md-4 d-none d-md-block">
-                <select class="form-select border-0 bg-transparent"><option>All Categories</option></select>
+                <form id="search-form" class="text-center" action="{% url 'core:product_catalog_page' %}" method="get">
+                  <select class="form-select border-0 bg-transparent" name="categoria">
+                    <option value="">Todas Categorias</option>
+                    {% for categoria in categorias %}
+                      <option value="{{ categoria.nome }}" {% if request.GET.categoria == categoria.nome %}selected{% endif %}>{{ categoria.nome }}</option>
+                    {% endfor %}
+                  </select>
               </div>
               <div class="col-11 col-md-7">
-                <form id="search-form" class="text-center" action="{% url 'core:buscar_produtos' %}" method="get">
-                  <input type="text" class="form-control border-0 bg-transparent" placeholder="Busque por mais de 20.000 produtos" name="q">
+                  <input type="text" class="form-control border-0 bg-transparent" placeholder="Busque por mais de 20.000 produtos" name="q" value="{{ request.GET.q }}">
+              </div>
+              <div class="col-1">
+                  <button type="submit" class="btn btn-link p-0 border-0">
+                    <svg width="24" height="24" viewBox="0 0 24 24">
+                      <use xlink:href="#search"></use>
+                    </svg>
+                  </button>
                 </form>
               </div>
-              <div class="col-1"><svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#search"></use></svg></div>
             </div>
           </div>
           <div class="col-sm-8 col-lg-4 d-flex justify-content-end gap-5 align-items-center mt-4 mt-sm-0 justify-content-center justify-content-sm-end">
@@ -119,9 +130,7 @@
                   <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
-                  <select class="filter-categories border-0 mb-0 me-5">
-                    <option>Comprar por Departamento</option>
-                  </select>
+
                   <ul class="navbar-nav justify-content-end menu-list list-unstyled d-flex gap-md-3 mb-0">
                     <li class="nav-item active">
                       <a href="{% url 'core:home' %}" class="nav-link">Home</a>
@@ -142,7 +151,17 @@
                             <li><a class="dropdown-item" href="{% url 'core:manage_brands' %}">Gerenciar Marcas</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{% url 'core:ver_aprovar_produtos' %}">Aprovar Produtos</a></li>
-                            <li><a class="dropdown-item" href="{% url 'core:ver_solicitacao_produtos' %}">Ver Solicitações</a></li>
+                        </ul>
+                    </li>
+                    {% elif user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Minha Conta
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'core:historico' %}">Histórico</a></li>
+                            <li><a class="dropdown-item" href="{% url 'core:manage_shopping_lists' %}">Lista de Compras</a></li>
+                            <li><a class="dropdown-item" href="{% url 'core:ver_solicitacao_produtos' %}">Solicitar Produto</a></li>
                         </ul>
                     </li>
                     {% endif %}
