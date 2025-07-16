@@ -1,5 +1,6 @@
 {% extends "core/base.html" %}
 {% load static %}
+{% load categoria_icons %} {# Garanta que este tem o caminho correto para o seu templatetag de emojis #}
 
 {% block title %}Página Inicial - FoodMart{% endblock %}
 
@@ -12,7 +13,7 @@
         <div class="section-header d-flex flex-wrap justify-content-between mb-5">
           <h2 class="section-title">Categorias</h2>
           <div class="d-flex align-items-center">
-            <a href="#" class="btn-link text-decoration-none">Ver todas →</a>
+            <a href="#" id="ver-todas-btn" class="btn-link text-decoration-none">Ver todas →</a>
             <div class="swiper-buttons ms-3">
               <button class="swiper-prev category-carousel-prev btn btn-yellow me-1">❮</button>
               <button class="swiper-next category-carousel-next btn btn-yellow">❯</button>
@@ -21,31 +22,42 @@
         </div>
       </div>
     </div>
-    <div class="row">
+    
+    {# SEÇÃO DO CARROSSEL DE CATEGORIAS (SWIPER) - INICIALMENTE VISÍVEL #}
+    <div class="row" id="category-carousel-section"> {# Adicionado ID para controle JS #}
       <div class="col-md-12">
         <div class="category-carousel swiper">
           <div class="swiper-wrapper">
-            {# ESTA PARTE SERÁ DINÂMICA NO FUTURO #}
-            {% for categoria in categorias %} {# Exemplo de como será com dados do backend #}
+            {% for categoria in categorias %}
               <a href="#" class="nav-link category-item swiper-slide">
-                <img src="{{ categoria.imagem_url }}" alt="{{ categoria.nome }}">
+                {# EXIBIÇÃO DO EMOJI AQUI. Mantenha o span #}
+                <span class="category-icon" style="font-size: 3em; display: block; margin: 0 auto;">{% icon_categoria categoria.nome %}</span>
                 <h3 class="category-title">{{ categoria.nome }}</h3>
               </a>
-            {% empty %}
-              {# Dados estáticos como fallback, caso não venham dados do backend #}
-              <a href="#" class="nav-link category-item swiper-slide">
-                <img src="{% static 'foodmart/images/icon-vegetables-broccoli.png' %}" alt="Categoria">
-                <h3 class="category-title">Frutas e Verduras</h3>
-              </a>
-              <a href="#" class="nav-link category-item swiper-slide">
-                <img src="{% static 'foodmart/images/icon-bread-baguette.png' %}" alt="Categoria">
-                <h3 class="category-title">Pães e Doces</h3>
-              </a>
+            {% empty %} {# Bloco para caso NÃO HAJA categorias no banco #}
+              <div class="swiper-slide text-center p-3">
+                <p>Nenhuma categoria encontrada no momento.</p>
+                <p>Por favor, adicione categorias via painel de administração.</p>
+              </div>
             {% endfor %}
           </div>
         </div>
       </div>
     </div>
+
+    {# SEÇÃO DA LISTA COMPLETA DE CATEGORIAS (INICIALMENTE OCULTA) #}
+    <div id="categoria-lista-completa" class="row d-none"> {# d-none inicial do Bootstrap #}
+        {% for categoria in categorias %}
+          <div class="col-md-3 col-sm-6 mb-4">
+            <a href="#" class="nav-link category-item text-center d-block"> 
+              {# EXIBIÇÃO DO EMOJI AQUI #}
+              <span class="category-icon" style="font-size: 4em; display: block; margin: 0 auto 10px auto;">{% icon_categoria categoria.nome %}</span>
+              <h3 class="category-title mt-2">{{ categoria.nome }}</h3>
+            </a>
+          </div>
+        {% endfor %}
+    </div>
+
   </div>
 </section>
 
@@ -58,15 +70,46 @@
 {# O Swiper.js já está no base.html, então você só precisa do script de inicialização #}
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    new Swiper('.category-carousel', {
-      slidesPerView: 5,
-      spaceBetween: 30,
-      navigation: {
-        nextEl: '.category-carousel-next',
-        prevEl: '.category-carousel-prev',
-      },
-      // ... outros breakpoints
-    });
+    const verTodasBtn = document.getElementById("ver-todas-btn");
+    const categoryCarouselSection = document.getElementById("category-carousel-section"); 
+    const listaCompleta = document.getElementById("categoria-lista-completa");
+
+    // Inicializa o Swiper
+    const swiperElement = document.querySelector('.category-carousel');
+    if (swiperElement) { // Verifica se o elemento existe antes de inicializar
+        new Swiper(swiperElement, {
+            slidesPerView: 5,
+            spaceBetween: 30,
+            navigation: {
+                nextEl: '.category-carousel-next',
+                prevEl: '.category-carousel-prev',
+            },
+            breakpoints: {
+                320: {
+                  slidesPerView: 2,
+                  spaceBetween: 15
+                },
+                768: {
+                  slidesPerView: 3,
+                  spaceBetween: 20
+                },
+                992: {
+                  slidesPerView: 5,
+                  spaceBetween: 30
+                }
+            }
+        });
+    }
+
+    // Lógica do botão "Ver todas"
+    if (verTodasBtn) {
+        verTodasBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+            categoryCarouselSection.classList.add("d-none");
+            listaCompleta.classList.remove("d-none");
+            this.classList.add("d-none"); // 'this' refere-se ao elemento clicado (verTodasBtn)
+        });
+    }
   });
 </script>
 {% endblock %}

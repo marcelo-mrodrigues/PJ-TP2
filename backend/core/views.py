@@ -32,8 +32,12 @@ Usuario = get_user_model()
 
 
 def home_view(request):
-    """Renderiza a página inicial."""
-    return render(request, "core/home.html")
+    """
+    Renderiza a página inicial, passando todas as categorias do banco de dados.
+    """
+    # Busca TODAS as categorias do banco de dados
+    categorias = Categoria.objects.all().order_by("nome")  # ordena por nome
+    return render(request, "core/home.html", {"categorias": categorias})
 
 
 def logout_view(request):
@@ -254,7 +258,6 @@ def manage_stores_view(request):
     lojas = Loja.objects.all().order_by("nome")
     lojas_html = render_lojas_html(request, lojas)
 
-
     return render(
         request,
         "core/manage_stores.html",
@@ -286,7 +289,9 @@ def manage_products_view(request):
             product_id = request.POST.get("id")
             instance = get_object_or_404(Produto, id=product_id)
             instance.delete()
-            messages.success(request, f"Produto '{instance.nome}' excluído com sucesso!")
+            messages.success(
+                request, f"Produto '{instance.nome}' excluído com sucesso!"
+            )
             return redirect("core:manage_products")
 
         else:  # Adicionar ou salvar edição
@@ -298,7 +303,9 @@ def manage_products_view(request):
                 if not instance:
                     product.adicionado_por = request.user
                 product.save()
-                messages.success(request, f"Produto '{product.nome}' salvo com sucesso!")
+                messages.success(
+                    request, f"Produto '{product.nome}' salvo com sucesso!"
+                )
                 return redirect("core:manage_products")
             else:
                 messages.error(request, "Erro ao salvar. Verifique os campos.")
@@ -341,7 +348,9 @@ def manage_offers_view(request):
             form = OfertaForm(request.POST, instance=instance)
             if form.is_valid():
                 offer = form.save()
-                messages.success(request, f"Oferta para '{offer.produto.nome}' salva com sucesso!")
+                messages.success(
+                    request, f"Oferta para '{offer.produto.nome}' salva com sucesso!"
+                )
                 return redirect("core:manage_offers")
             else:
                 messages.error(request, "Erro ao salvar. Verifique os campos.")
