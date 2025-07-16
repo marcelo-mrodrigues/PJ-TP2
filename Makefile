@@ -45,7 +45,6 @@ run-dev:
 # Inicia o servidor de desenvolvimento do Backend (Django)
 run-backend:
 	@echo "--- Iniciando servidor de desenvolvimento Backend (Django)..."
-	python ./backend/manage.py migrate
 	./backend/venv/bin/python backend/manage.py runserver
 
 # cache e build limpados
