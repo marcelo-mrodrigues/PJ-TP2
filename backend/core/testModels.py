@@ -1,3 +1,14 @@
+## @file tests/test_models.py
+#
+# @brief Contém testes de unidade para a criação e validação dos modelos de dados do aplicativo 'core'.
+#
+# Este arquivo utiliza o framework de testes `unittest` do Django para
+# verificar a funcionalidade básica de criação de instâncias para cada modelo,
+# bem como a validação de campos e o comportamento de relacionamentos e restrições.
+#
+# @see core.models
+# @see core.forms
+
 from django.test import TestCase
 from django.utils import timezone
 from datetime import timedelta
@@ -9,10 +20,16 @@ import decimal # Para lidar com valores DecimalFields
 from unittest.mock import patch # Para mockar timezone.now se necessário para testes precisos
 
 
+## @brief Conjunto de testes para a criação e propriedades básicas dos modelos.
+#
+# Testa a criação de instâncias para Categoria, Marca, Produto, Loja, Oferta,
+# Usuario e ItemComprado, verificando se os dados são salvos corretamente
+# e se as representações em string dos objetos estão como esperado.
 class ModelCreationTest(TestCase):
-    """
-    Testes para a criação e propriedades básicas dos modelos.
-    """
+    ## @brief Configura os dados de teste que serão usados por todos os métodos da classe.
+    #
+    # Cria usuários (administrador e normal), categorias, marcas, um produto base e uma loja base
+    # para serem utilizados como pré-requisitos nos testes de criação de outros modelos.
     @classmethod
     def setUpTestData(cls):
         # Criar um usuário administrador para associar aos produtos
@@ -24,8 +41,12 @@ class ModelCreationTest(TestCase):
             last_name='User',
             is_staff=True,
             is_superuser=True
-            # REMOVIDO: 'role' não é mais um campo no modelo Usuario
+            # REMOVIDO: 'role' não é mais um campo no modelo Usuario (comentário original)
         )
+        ## @var admin_user
+        # @brief Instância de usuário com permissões de administrador.
+        # @type Usuario
+
         # Criar um usuário normal
         cls.normal_user = Usuario.objects.create_user(
             username='normaluser',
@@ -33,13 +54,25 @@ class ModelCreationTest(TestCase):
             password='normalpassword',
             first_name='Normal', # Adicionado first_name/last_name para consistência
             last_name='User'
-            # REMOVIDO: 'role' não é mais um campo no modelo Usuario
+            # REMOVIDO: 'role' não é mais um campo no modelo Usuario (comentário original)
         )
+        ## @var normal_user
+        # @brief Instância de usuário com permissões normais.
+        # @type Usuario
 
         # Criar categorias e marcas
         cls.categoria_eletronicos = Categoria.objects.create(nome='Eletrônicos')
+        ## @var categoria_eletronicos
+        # @brief Instância da categoria 'Eletrônicos'.
+        # @type Categoria
         cls.marca_samsung = Marca.objects.create(nome='Samsung')
+        ## @var marca_samsung
+        # @brief Instância da marca 'Samsung'.
+        # @type Marca
         cls.marca_apple = Marca.objects.create(nome='Apple')
+        ## @var marca_apple
+        # @brief Instância da marca 'Apple'.
+        # @type Marca
         
         # Criar um produto para uso em ofertas
         cls.produto_base = Produto.objects.create(
@@ -48,8 +81,18 @@ class ModelCreationTest(TestCase):
             adicionado_por=cls.admin_user,
             imagem_url='http://example.com/base_prod.jpg' # Adicionado imagem_url para consistência
         )
+        ## @var produto_base
+        # @brief Instância de um produto base para testes de Oferta e ItemComprado.
+        # @type Produto
         cls.loja_base = Loja.objects.create(nome='Loja Base')
+        ## @var loja_base
+        # @brief Instância de uma loja base para testes de Oferta e ItemComprado.
+        # @type Loja
 
+    ## @brief Testa a criação de uma instância do modelo Categoria.
+    #
+    # Verifica se a categoria é criada com o nome correto, se o contador de objetos aumenta
+    # e se a representação em string está correta.
     def test_create_categoria(self):
         initial_count = Categoria.objects.count()
         categoria = Categoria.objects.create(nome='Livros')
@@ -58,6 +101,10 @@ class ModelCreationTest(TestCase):
         self.assertTrue(isinstance(categoria, Categoria))
         self.assertEqual(str(categoria), 'Livros')
 
+    ## @brief Testa a criação de uma instância do modelo Marca.
+    #
+    # Verifica se a marca é criada com o nome correto, se o contador de objetos aumenta
+    # e se a representação em string está correta.
     def test_create_marca(self):
         initial_count = Marca.objects.count()
         marca = Marca.objects.create(nome='Dell')
@@ -66,6 +113,10 @@ class ModelCreationTest(TestCase):
         self.assertTrue(isinstance(marca, Marca))
         self.assertEqual(str(marca), 'Dell')
 
+    ## @brief Testa a criação de uma instância do modelo Produto.
+    #
+    # Verifica se o produto é criado com todos os campos corretamente preenchidos,
+    # incluindo relacionamentos com Categoria, Marca e Usuario.
     def test_create_product(self):
         product_count_before = Produto.objects.count()
         produto = Produto.objects.create(
@@ -88,6 +139,9 @@ class ModelCreationTest(TestCase):
         self.assertTrue(isinstance(produto, Produto))
         self.assertEqual(str(produto), 'Smartphone Galaxy S23')
 
+    ## @brief Testa a criação de uma instância do modelo Loja.
+    #
+    # Verifica se a loja é criada com todos os campos corretamente preenchidos.
     def test_create_loja(self):
         loja_count_before = Loja.objects.count()
         loja = Loja.objects.create(
@@ -103,6 +157,10 @@ class ModelCreationTest(TestCase):
         self.assertTrue(isinstance(loja, Loja))
         self.assertEqual(str(loja), 'Magazine Luiza')
 
+    ## @brief Testa a criação de uma instância do modelo Oferta.
+    #
+    # Verifica se a oferta é criada com os relacionamentos corretos com Produto e Loja,
+    # e se o preço e data de captura são registrados.
     def test_create_oferta(self):
         oferta_count_before = Oferta.objects.count()
         oferta = Oferta.objects.create(
@@ -121,12 +179,20 @@ class ModelCreationTest(TestCase):
         self.assertEqual(str(oferta), expected_str)
 
 
+    ## @brief Testa a restrição unique_together do modelo Oferta para diferentes momentos.
+    #
+    # Verifica se é possível criar múltiplas ofertas para o mesmo produto e loja,
+    # desde que a `data_captura` seja diferente.
     def test_oferta_unique_together_different_time(self):
         Oferta.objects.create(produto=self.produto_base, loja=self.loja_base, preco=decimal.Decimal('300.00'), data_captura=timezone.now())
         future_time = timezone.now() + timedelta(seconds=1)
         Oferta.objects.create(produto=self.produto_base, loja=self.loja_base, preco=decimal.Decimal('290.00'), data_captura=future_time)
         self.assertEqual(Oferta.objects.filter(produto=self.produto_base, loja=self.loja_base).count(), 2)
 
+    ## @brief Testa a criação de uma instância do modelo Usuario.
+    #
+    # Verifica se um usuário normal é criado corretamente com os campos esperados
+    # e se as flags de staff/superuser são `False`.
     def test_usuario_creation(self):
         user_count_before = Usuario.objects.count()
         user = Usuario.objects.create_user(
@@ -145,6 +211,10 @@ class ModelCreationTest(TestCase):
         self.assertEqual(str(user), 'Test User')
 
 
+    ## @brief Testa a criação de uma instância do modelo ItemComprado.
+    #
+    # Verifica se um item comprado é registrado corretamente, com o preço pago,
+    # data da compra e relacionamentos com Produto, Loja e Usuário.
     def test_item_comprado(self):
         data_compra_hoje = timezone.localdate()
         itens_comprados_antes = ItemComprado.objects.count()
@@ -165,3 +235,4 @@ class ModelCreationTest(TestCase):
         self.assertTrue(isinstance(iten_comprado, ItemComprado))
         expected_str = f"Compra de {self.produto_base.nome} por {self.normal_user.get_full_name() if self.normal_user.first_name else self.normal_user.username}"
         self.assertEqual(str(iten_comprado), expected_str)
+

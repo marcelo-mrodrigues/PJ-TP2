@@ -1,4 +1,13 @@
-# core/utils.py (Versão Corrigida e Otimizada)
+## @file core/utils.py
+#
+# @brief Contém funções utilitárias para manipulação de dados e lógica de negócio do aplicativo 'core'.
+#
+# Este arquivo agrupa funções auxiliares que interagem com os modelos do Django
+# para buscar informações de produtos, gerenciar o carrinho de compras na sessão,
+# realizar buscas no catálogo e renderizar componentes HTML para o backend.
+#
+# @see core.models
+# @see core.forms
 
 from .models import Produto, Oferta
 from django.db.models import Q, Min
@@ -11,10 +20,12 @@ from .forms import LojaForm
 from .models import Produto, ListaCompra, ItemLista
 
 
+## @brief Busca informações detalhadas de um produto por ID, incluindo todas as suas ofertas.
+#
+# @param product_id O ID do produto a ser buscado.
+# @return Um dicionário contendo os detalhes do produto, seu menor preço e uma lista de ofertas,
+#         ou None se o produto não for encontrado.
 def get_product_info(product_id):
-    """
-    Busca informações detalhadas de um produto por ID, incluindo todas as suas ofertas.
-    """
     try:
         # Usar prefetch_related para ofertas é mais eficiente quando há muitos resultados
         produto = (
@@ -53,11 +64,13 @@ def get_product_info(product_id):
     return produto_info
 
 
+## @brief Transfere o conteúdo do carrinho da sessão para o carrinho permanente do usuário no banco de dados.
+#
+# Esta função é chamada após o login de um usuário para mesclar itens
+# que foram adicionados ao carrinho enquanto o usuário estava anônimo.
+#
+# @param request O objeto HttpRequest do Django, contendo a sessão e o usuário.
 def merge_session_cart_to_db(request):
-    """
-    Pega o carrinho da sessão (de um usuário anônimo) e o transfere
-    para o carrinho permanente do usuário no banco de dados após o login.
-    """
     if "cart" in request.session and request.user.is_authenticated:
         session_cart = request.session.get("cart", {})
 
@@ -95,10 +108,14 @@ def merge_session_cart_to_db(request):
         del request.session["cart"]
 
 
+## @brief Busca produtos com base em um termo de consulta e anota o menor preço para cada um.
+#
+# A busca é realizada nos campos de nome, descrição, nome da categoria e nome da marca.
+#
+# @param query O termo de busca (string). Se vazio, retorna todos os produtos.
+# @return Uma lista de dicionários, onde cada dicionário representa um produto
+#         com suas informações básicas e o menor preço encontrado em suas ofertas.
 def search_products(query=""):
-    """
-    Busca produtos com base em um termo de consulta e anota o menor preço para cada um.
-    """
     # Começa com todos os produtos
     produtos = Produto.objects.all()
 
@@ -140,10 +157,15 @@ def search_products(query=""):
     return results
 
 
+## @brief Gera o HTML para exibir uma lista de lojas, com botões de editar e excluir.
+#
+# Esta função é utilizada em views de gerenciamento para renderizar dinamicamente
+# a lista de lojas existentes.
+#
+# @param request O objeto HttpRequest do Django, necessário para obter o token CSRF.
+# @param lojas_queryset Um QuerySet de objetos Loja a serem renderizados.
+# @return Uma string HTML representando a lista de lojas.
 def render_lojas_html(request, lojas_queryset):
-    """
-    Gera o HTML da lista de lojas, com botões de editar e excluir.
-    """
     if not lojas_queryset.exists():
         return "<p>Nenhuma loja cadastrada ainda.</p>"
 
@@ -171,13 +193,17 @@ def render_lojas_html(request, lojas_queryset):
     return html
 
 
+## @brief Processa o envio de um formulário de Loja (adição ou edição).
+#
+# Esta função encapsula a lógica de validação e salvamento de formulários de loja,
+# retornando o formulário, um indicador de redirecionamento e mensagens adicionais.
+#
+# @param request O objeto HttpRequest do Django, contendo os dados POST.
+# @return Uma tupla contendo:
+#         - form (LojaForm): A instância do formulário processado.
+#         - redirect_needed (bool): True se o formulário foi salvo com sucesso e um redirecionamento é necessário.
+#         - additional_info (str): Uma string HTML com informações adicionais ou mensagens de erro.
 def process_loja_form(request):
-    """
-    Processa o formulário da loja (adicionar/editar) e retorna:
-    - form: instância do formulário
-    - redirect_needed: se precisa redirecionar
-    - additional_info: mensagem opcional
-    """
     store_id = request.POST.get("store_id_hidden")
     instance = get_object_or_404(Loja, id=store_id) if store_id else None
     form = LojaForm(request.POST, instance=instance)
@@ -198,6 +224,12 @@ def process_loja_form(request):
         return form, False, info
 
 
+## @brief Gera o HTML formatado para exibir as mensagens do Django.
+#
+# Converte as mensagens de `django.contrib.messages` em uma string HTML com estilos básicos.
+#
+# @param request O objeto HttpRequest do Django, de onde as mensagens são obtidas.
+# @return Uma string HTML contendo todas as mensagens formatadas.
 def _get_messages_html(request):
     messages_html = ""
     if messages.get_messages(request):
@@ -210,6 +242,13 @@ def _get_messages_html(request):
     return messages_html
 
 
+## @brief Retorna o valor correto para o campo 'action' de um formulário principal de gerenciamento.
+#
+# Baseia-se no título da página para determinar a ação (adicionar ou editar)
+# para diferentes tipos de entidades (Loja, Produto, Oferta).
+#
+# @param title O título da página de gerenciamento (ex: "Gerenciar Lojas", "Gerenciar Produtos").
+# @return Uma string representando o valor da ação do formulário.
 def _get_action_value_for_form(title):
     """Retorna o valor correto para o campo 'action' do formulário principal."""
     if "Loja" in title:
@@ -221,6 +260,17 @@ def _get_action_value_for_form(title):
     return ""  # Fallback caso o título não corresponda a nenhum
 
 
+## @brief Retorna um dicionário de contexto para renderizar templates HTML base de gerenciamento.
+#
+# Esta função auxilia na construção de páginas de gerenciamento que incluem um formulário
+# (para adicionar/editar), uma lista de itens existentes e mensagens.
+#
+# @param request O objeto HttpRequest do Django.
+# @param title O título da página (ex: "Gerenciar Lojas").
+# @param form_obj Uma instância de Django Form (opcional), usada para renderizar o formulário.
+# @param existing_items_html Uma string HTML com a lista de itens existentes.
+# @param additional_info_html Uma string HTML com informações adicionais a serem exibidas.
+# @return Um dicionário contendo o contexto necessário para o template.
 def _get_base_html_context(
     request, title, form_obj=None, existing_items_html="", additional_info_html=""
 ):

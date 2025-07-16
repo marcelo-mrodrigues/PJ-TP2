@@ -12,16 +12,16 @@
 <area shape="poly" id="edge32_Node000000_Node000005" title=" " alt="" coords="74,312,102,296,132,282,171,270,173,275,134,286,104,300,77,316"/>
 <area shape="rect" id="Node000006" href="$classcore_1_1testForms_1_1ProdutoFormTest.html" title="Conjunto de testes para o formulário ProdutoForm." alt="" coords="151,297,383,322"/>
 <area shape="poly" id="edge33_Node000000_Node000006" title=" " alt="" coords="98,326,156,319,156,325,99,331"/>
-<area shape="rect" id="Node000007" href="$classcore_1_1testModels_1_1ModelCreationTest.html" title=" " alt="" coords="142,346,393,371"/>
+<area shape="rect" id="Node000007" href="$classcore_1_1testModels_1_1ModelCreationTest.html" title="Conjunto de testes para a criação e propriedades básicas dos modelos." alt="" coords="142,346,393,371"/>
 <area shape="poly" id="edge34_Node000000_Node000007" title=" " alt="" coords="99,338,150,343,150,349,99,343"/>
-<area shape="rect" id="Node000008" href="$classcore_1_1testUtils_1_1ProductInfoUtilsTest.html" title=" " alt="" coords="174,396,361,436"/>
+<area shape="rect" id="Node000008" href="$classcore_1_1testUtils_1_1ProductInfoUtilsTest.html" title="Conjunto de testes para as funções utilitárias que interagem com o ORM." alt="" coords="174,396,361,436"/>
 <area shape="poly" id="edge35_Node000000_Node000008" title=" " alt="" coords="79,352,134,380,175,394,173,399,132,385,76,357"/>
-<area shape="rect" id="Node000009" href="$classcore_1_1testViews_1_1ApiViewsTest.html" title=" " alt="" coords="163,461,371,486"/>
+<area shape="rect" id="Node000009" href="$classcore_1_1testViews_1_1ApiViewsTest.html" title="Conjunto de testes para as views de API." alt="" coords="163,461,371,486"/>
 <area shape="poly" id="edge36_Node000000_Node000009" title=" " alt="" coords="61,358,90,404,111,427,135,446,164,459,162,464,132,450,107,431,86,407,57,361"/>
-<area shape="rect" id="Node000010" href="$classcore_1_1testViews_1_1BasicViewsTest.html" title=" " alt="" coords="156,510,379,535"/>
+<area shape="rect" id="Node000010" href="$classcore_1_1testViews_1_1BasicViewsTest.html" title="Conjunto de testes para as views básicas do aplicativo." alt="" coords="156,510,379,535"/>
 <area shape="poly" id="edge37_Node000000_Node000010" title=" " alt="" coords="56,360,66,392,82,429,105,465,135,495,157,507,154,512,132,499,101,469,77,432,61,394,51,362"/>
-<area shape="rect" id="Node000011" href="$classcore_1_1testViews_1_1ManagementViewsTest.html" title=" " alt="" coords="163,560,371,600"/>
+<area shape="rect" id="Node000011" href="$classcore_1_1testViews_1_1ManagementViewsTest.html" title="Conjunto de testes para as views de gerenciamento (requerem staff)." alt="" coords="163,560,371,600"/>
 <area shape="poly" id="edge38_Node000000_Node000011" title=" " alt="" coords="52,360,60,401,75,451,100,502,116,525,135,545,165,563,162,567,132,549,112,528,95,505,70,453,55,402,47,361"/>
-<area shape="rect" id="Node000012" href="$classcore_1_1testViews_1_1ProtectedViewsTest.html" title=" " alt="" coords="175,624,359,664"/>
+<area shape="rect" id="Node000012" href="$classcore_1_1testViews_1_1ProtectedViewsTest.html" title="Conjunto de testes para as views protegidas por autenticação." alt="" coords="175,624,359,664"/>
 <area shape="poly" id="edge39_Node000000_Node000012" title=" " alt="" coords="49,361,53,413,66,481,77,516,92,551,111,582,135,610,154,624,176,633,174,638,152,628,132,614,107,586,87,553,72,518,61,482,48,414,44,361"/>
 </map>
