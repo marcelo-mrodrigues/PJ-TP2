@@ -1,0 +1,75 @@
+Log de Atividades do Projeto
+Este documento registra as principais etapas e o progresso no desenvolvimento do projeto de e-commerce.
+
+Data
+
+Horas Trabalhadas
+
+Tipo(s) de Tarefa
+
+Descrição da Tarefa
+
+20/06
+
+3h
+
+Dedicação ao estudo de materiais teóricos e práticos.
+
+Aprofundamento nos conceitos de Python, Django e Javascript, consolidando a base para o projeto.
+
+12/07
+
+4h
+
+Estudar funcoes já codificadas para implementar melhorias e integrar funções novas
+
+| Estudos relacionados a Python, Django e Javascript
+
+
+14/07
+
+5h
+
+codificar módulo, revisar código do módulo, projetar
+
+Refatoração completa das views.py, removendo a geração de HTML inline e implementando a renderização através de templates Django. Criação de um template de gerenciamento genérico (management_page.html) para as áreas administrativas, e correção das urls.py para usar namespaces (app_name = 'core') e o padrão core:nome_da_url.
+
+15/07
+
+6h
+
+gerenciar a construção do software, revisar especificações, depurar código
+
+Integração do template visual "FoodMart" ao projeto. Configuração dos arquivos estáticos (STATIC_URL, STATICFILES_DIRS) no settings.py para carregar corretamente os arquivos CSS, JS e imagens do tema. Resolução de erros 404 Not Found para os arquivos estáticos e NoReverseMatch nos templates devido ao uso de namespaces.
+
+15/07
+
+4h
+
+especificar as funções, codificar módulo, depurar código
+
+Implementação do sistema de autenticação, incluindo a exibição condicional de botões de Login/Logout e do Painel Admin no base.html. Criação da logout_view e correção do erro CSRF token from POST incorrect pela adição da tag {% csrf_token %} em todos os formulários.
+
+16/07
+
+8h
+
+projetar, especificar as funções, codificar módulo, gerenciar a construção do software, revisar código do módulo
+
+Desenvolvimento completo da funcionalidade de carrinho de compras dinâmico. Criação de APIs no views.py para adicionar, remover e obter itens do carrinho usando sessões. Implementação do script cart.js para interagir com as APIs sem recarregar a página, e atualização do base.html para exibir o carrinho (offcanvas) e os totais dinamicamente.
+
+16/07
+
+3h
+
+especificar as funções, codificar módulo, projetar
+
+Implementação do fluxo de checkout. Criação da checkout_view protegida por login, que exibe os itens do carrinho em uma página de finalização. Ajuste da login_view para redirecionar o usuário para o checkout após o login, caso ele estivesse tentando finalizar uma compra.
+
+16/07
+
+2h
+
+especificar os módulos, codificar módulo, projetar
+
+Criação da funcionalidade de "Registro de Atividades". Definição do modelo RegistroAtividade no models.py, criação do RegistroAtividadeForm em forms.py, implementação da manage_atividades_view e do template manage_atividades.html para exibir os registros em uma tabela.
