@@ -1,0 +1,109 @@
+/**
+ * @mainpage Documentação do Projeto FoodMart
+ *
+ * @section intro Introdução
+ *
+ * Bem-vindo à documentação do backend do projeto FoodMart.
+ *
+ * @subsection tp2_especificacoes Especificações do Projeto de Técnicas de Programação 2
+ *
+ * 1) **Integrantes do Grupo:**
+ * - Evelyn Soares Pereira - 170102785
+ * - Fernando Nunes de Freitas - 222014661
+ * - Lucas da Costa Rodrigues - 221017079
+ * - Lucas Cardoso Moreira - 221017103
+ * - Lucas Resende Silveira Reis - 180144421
+ * - Marcelo Marques Rodrigues - 221018960
+ * - Vitor Alencar Ribeiro - 231036292
+
+ *
+ * 2) **Objetivo do Projeto:**
+ * O projeto FoodMart visa ser um site de comparação de preços de produtos,
+ * inspirado em plataformas como Buscapé e Zoom.
+ *
+ * 3) **Histórias de Usuário:**
+ * @li **Eu como usuário:**
+ * - Desejo acessar uma página de pesquisa de produtos para poder pesquisar e comparar seus preços.
+ * - Quero filtrar produtos para poder restringir as respostas.
+ * - Desejo acessar uma página de registro de produtos para poder buscar e comparar preços dele.
+ * - Quero cadastrar uma conta para poder utilizar as funcionalidades de usuário com login.
+ * - Quero logar em minha conta para poder utilizar das funcionalidades de usuário com login.
+ * - Quero acessar meu perfil para conseguir informações de compras, endereço, listas de compras e etc.
+ * - Quero fazer um comentário sobre um produto para poder compartilhar minha opinião sobre o produto.
+ * @li **Eu como administrador:**
+ * - Desejo acessar uma página de solicitação de registros de produtos para poder aceitar ou declinar as propostas.
+ * - Quero acessar uma página de gerenciamento de comentários para que possam ser retirados comentários inapropriados.
+ * - Quero acessar uma página de propriedades de um produto para que possa editar a descrição, ou excluir um produto.
+ *
+ * 4) **Linguagens e Tecnologias:**
+ * - Linguagens a serem utilizadas: Python & Javascript
+ * - Bibliotecas e Frameworks: Node.js, Next.js, Django REST Framework, Django.
+ *
+ * 5) **Padrões e Ferramentas de Codificação:**
+ * - Padrão de Codificação: PEP 8 (Python) e Airbnb JavaScript (Javascript).
+ * - Verificadores de Padrão de Codificação: JSLint (Javascript) e Pylint (Python).
+ * - Verificador de Código Geral: Flake8 (Python).
+ *
+ * 6) **Testes e Cobertura:**
+ * - Framework de Teste: Pytest (Python).
+ * - Verificador de Cobertura: coverage.py (Python).
+ *
+ * 7) **Controle de Versões:**
+ * - Site para Controle de Versões: GitHub
+ * - Repositório: https://github.com/marcelo-mrodrigues/PJ-TP2
+ * - Gerenciamento de Projetos: Trello.
+ *
+ * 8) **Ferramenta de Documentação do Código:**
+ * - Doxygen.
+ *
+ * @section arquitetura_geral Arquitetura Geral
+ *
+ * O projeto segue uma arquitetura separada (headless), onde:
+ * - O **Backend (Django)** atua como uma API RESTful, fornecendo dados e lógica de negócio e renderiza a interface.
+ * - O **Frontend (Next.js)** consome esta API para renderizar a interface do usuário.
+ *
+ * @subsection backend_django Backend (Django)
+ *
+ * Desenvolvido em Python com o framework Django, o backend é responsável por:
+ * - **Modelagem de Dados:** Armazenamento e organização de informações sobre produtos, categorias, lojas, ofertas, usuários, etc.
+ * - **API RESTful:** Exposição de endpoints para o frontend consumir e interagir com os dados.
+ * - **Autenticação e Autorização:** Gerenciamento de usuários e permissões de acesso.
+ * - **Lógica de Negócio:** Processamento de solicitações de produtos, aprovações, gestão de carrinho e histórico de compras.
+ *
+ * @subsection frontend_nextjs Frontend (Next.js)
+ *
+ * Desenvolvido em React com o framework Next.js, o frontend é responsável por:
+ * - **Interface do Usuário (UI/UX):** Renderização de todas as páginas e componentes visuais.
+ * - **Consumo de API:** Realização de requisições HTTP para o backend para obter e enviar dados.
+ * - **Interatividade:** Toda a lógica de interatividade do lado do cliente.
+ *
+ * @section estrutura_modelos Modelos de Dados (core/models.py)
+ *
+ * Os modelos de dados são o coração do backend, definindo a estrutura das informações.
+ * O arquivo `core/models.py` (documentado em detalhes aqui) contém as seguintes entidades principais:
+ * - @ref Categoria: Define tipos de produtos.
+ * - @ref Marca: Define fabricantes/marcas de produtos.
+ * - @ref Usuario: Modelo de usuário customizado do Django.
+ * - @ref Produto: O produto em si, com status de aprovação.
+ * - @ref Loja: Estabelecimentos onde os produtos são vendidos.
+ * - @ref Oferta: Preço de um produto em uma loja específica.
+ * - @ref ItemComprado: Registro de um produto comprado por um usuário.
+ * - @ref ListaCompra: Uma lista de desejos ou compras planejadas.
+ * - @ref ItemLista: Um produto dentro de uma lista de compras.
+ * - @ref Comentario: Avaliações e comentários de usuários sobre produtos/lojas.
+ * - @ref ProdutoIndicado: Produtos sugeridos por usuários que aguardam aprovação.
+ *
+ * Para uma exploração detalhada de cada modelo e seus campos, navegue pelos links acima ou pela seção "Classes" na documentação.
+ *
+ * @section como_usar Como Gerar a Documentação
+ *
+ * 1. Certifique-se de ter o Doxygen instalado em seu sistema.
+ * 2. Configure o Doxygen para escanear seu projeto (crie um `Doxyfile` se ainda não tiver).
+ * 3. Execute `doxygen` na linha de comando no diretório do seu `Doxyfile`.
+ * 4. A documentação será gerada em `html/index.html` (ou no diretório de saída configurado).
+ *
+ * @section contribuicao Contribuição
+ *
+ * Para contribuir, siga as diretrizes de codificação e certifique-se de que todo o novo código
+ * e modelos de dados estejam devidamente documentados com comentários Doxygen.
+ */

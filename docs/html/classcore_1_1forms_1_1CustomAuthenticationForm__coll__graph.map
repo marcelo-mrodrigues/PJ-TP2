@@ -1,0 +1,5 @@
+<map id="core.forms.CustomAuthenticationForm" name="core.forms.CustomAuthenticationForm">
+<area shape="rect" id="Node000001" title="Formulário de login que permite autenticação via username ou e&#45;mail." alt="" coords="5,79,280,104"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="67,5,218,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="145,44,145,79,140,79,140,44"/>
+</map>

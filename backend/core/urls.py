@@ -1,4 +1,8 @@
-# core/urls.py
+"""
+Mapeamento de URLs da aplicação 'core'.
+
+Organiza as rotas públicas, autenticadas, de API e de gerenciamento do sistema.
+"""
 
 from django.urls import path
 from . import views

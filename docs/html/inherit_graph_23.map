@@ -1,0 +1,23 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,228,120,253"/>
+<area shape="rect" id="Node000001" href="$classcore_1_1models_1_1Categoria.html" title="Modelo que representa uma Categoria de produto." alt="" coords="189,5,358,31"/>
+<area shape="poly" id="edge18_Node000000_Node000001" title=" " alt="" coords="68,213,80,174,100,127,128,80,146,59,166,40,187,28,190,33,170,44,150,62,132,83,104,130,85,176,73,215"/>
+<area shape="rect" id="Node000002" href="$classcore_1_1models_1_1Comentario.html" title="Modelo que representa um Comentário ou avaliação de um usuário sobre um Produto ou Loja." alt="" coords="182,55,365,80"/>
+<area shape="poly" id="edge19_Node000000_Node000002" title=" " alt="" coords="72,214,107,151,134,117,167,89,189,78,191,82,169,94,138,121,112,154,77,217"/>
+<area shape="rect" id="Node000003" href="$classcore_1_1models_1_1ItemComprado.html" title="Modelo que registra um item que foi efetivamente comprado por um usuário." alt="" coords="172,104,375,129"/>
+<area shape="poly" id="edge20_Node000000_Node000003" title=" " alt="" coords="80,215,117,175,141,155,167,138,194,127,196,132,169,143,144,160,121,179,84,219"/>
+<area shape="rect" id="Node000004" href="$classcore_1_1models_1_1ItemLista.html" title="Modelo que representa um item específico dentro de uma Lista de Compras." alt="" coords="190,153,357,179"/>
+<area shape="poly" id="edge21_Node000000_Node000004" title=" " alt="" coords="98,219,167,187,206,176,207,181,169,193,100,224"/>
+<area shape="rect" id="Node000005" href="$classcore_1_1models_1_1ListaCompra.html" title="Modelo que representa uma Lista de Compras criada por um usuário." alt="" coords="179,203,367,228"/>
+<area shape="poly" id="edge22_Node000000_Node000005" title=" " alt="" coords="134,230,179,224,180,229,134,235"/>
+<area shape="rect" id="Node000006" href="$classcore_1_1models_1_1Loja.html" title="Modelo que representa uma Loja onde os produtos podem ser comprados." alt="" coords="207,252,340,277"/>
+<area shape="poly" id="edge23_Node000000_Node000006" title=" " alt="" coords="134,246,207,254,206,260,133,251"/>
+<area shape="rect" id="Node000007" href="$classcore_1_1models_1_1Marca.html" title="Modelo que representa uma Marca de produto." alt="" coords="200,301,347,327"/>
+<area shape="poly" id="edge24_Node000000_Node000007" title=" " alt="" coords="101,257,169,286,212,299,210,304,167,291,99,262"/>
+<area shape="rect" id="Node000008" href="$classcore_1_1models_1_1Oferta.html" title="Modelo que representa uma Oferta específica de um produto em uma loja." alt="" coords="200,351,347,376"/>
+<area shape="poly" id="edge25_Node000000_Node000008" title=" " alt="" coords="85,262,121,301,144,320,169,336,201,348,199,353,167,340,141,324,118,304,81,266"/>
+<area shape="rect" id="Node000009" href="$classcore_1_1models_1_1Produto.html" title="Modelo que representa um Produto no catálogo." alt="" coords="195,400,351,425"/>
+<area shape="poly" id="edge26_Node000000_Node000009" title=" " alt="" coords="77,264,112,326,138,358,169,385,196,398,194,403,167,390,135,362,108,329,73,267"/>
+<area shape="rect" id="Node000010" href="$classcore_1_1models_1_1ProdutoIndicado.html" title="Modelo que representa um Produto Indicado por um usuário para inclusão no catálogo." alt="" coords="168,449,379,475"/>
+<area shape="poly" id="edge27_Node000000_Node000010" title=" " alt="" coords="73,266,85,304,105,350,133,396,170,435,191,447,189,452,166,439,128,399,100,352,80,306,68,268"/>
+</map>

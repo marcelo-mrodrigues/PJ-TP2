@@ -1,10 +1,18 @@
-# Arquivo: backend/core/admin.py
+##
+# @file admin.py
+# @brief Registro dos modelos no Django Admin.
+# 
+# Este arquivo configura os modelos que estarão disponíveis no painel administrativo do Django.
+# Permite que administradores visualizem, editem e gerenciem instâncias dos modelos via interface web.
+#
+# @date 2025-07-15
+##
 
 from django.contrib import admin
 
 # Importe seus modelos para registrá-los no Django Admin
 from .models import (
-    Categoria,
+    Categoria, 
     Marca,
     Produto,
     Usuario,

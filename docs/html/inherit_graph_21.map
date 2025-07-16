@@ -1,0 +1,19 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,179,143,204"/>
+<area shape="rect" id="Node000001" href="$classcore_1_1forms_1_1CategoriaForm.html" title="Formulário para criação ou edição de categorias de produto." alt="" coords="200,5,392,31"/>
+<area shape="poly" id="edge4_Node000000_Node000001" title=" " alt="" coords="85,165,125,102,155,68,189,40,213,28,215,33,192,44,158,72,130,105,90,168"/>
+<area shape="rect" id="Node000002" href="$classcore_1_1forms_1_1ComentarioForm.html" title="Formulário para envio de comentários em produtos." alt="" coords="193,55,399,80"/>
+<area shape="poly" id="edge5_Node000000_Node000002" title=" " alt="" coords="94,166,135,126,161,106,189,89,218,78,220,83,192,94,164,110,139,130,97,170"/>
+<area shape="rect" id="Node000003" href="$classcore_1_1forms_1_1ItemListaForm.html" title="Formulário para adicionar um item a uma lista de compras." alt="" coords="201,104,391,129"/>
+<area shape="poly" id="edge6_Node000000_Node000003" title=" " alt="" coords="112,170,190,138,230,127,232,132,192,143,114,175"/>
+<area shape="rect" id="Node000004" href="$classcore_1_1forms_1_1ListaCompraForm.html" title="Formulário para criar ou editar uma lista de compras." alt="" coords="191,153,401,179"/>
+<area shape="poly" id="edge7_Node000000_Node000004" title=" " alt="" coords="156,179,190,175,191,181,157,185"/>
+<area shape="rect" id="Node000005" href="$classcore_1_1forms_1_1LojaForm.html" title="Formulário para criação ou edição de lojas." alt="" coords="218,203,374,228"/>
+<area shape="poly" id="edge8_Node000000_Node000005" title=" " alt="" coords="157,198,218,204,217,210,156,203"/>
+<area shape="rect" id="Node000006" href="$classcore_1_1forms_1_1MarcaForm.html" title="Formulário para criação ou edição de marcas de produto." alt="" coords="211,252,381,277"/>
+<area shape="poly" id="edge9_Node000000_Node000006" title=" " alt="" coords="116,207,192,237,236,249,235,254,190,242,114,212"/>
+<area shape="rect" id="Node000007" href="$classcore_1_1forms_1_1OfertaForm.html" title="Formulário para criação ou edição de ofertas de produtos." alt="" coords="211,301,381,327"/>
+<area shape="poly" id="edge10_Node000000_Node000007" title=" " alt="" coords="98,212,139,251,192,286,224,299,222,304,189,291,136,255,94,216"/>
+<area shape="rect" id="Node000008" href="$classcore_1_1forms_1_1ProdutoForm.html" title="Formulário para criação ou edição de produtos." alt="" coords="207,351,385,376"/>
+<area shape="poly" id="edge11_Node000000_Node000008" title=" " alt="" coords="90,215,130,276,159,309,192,336,218,348,216,353,189,340,155,313,126,280,86,218"/>
+</map>

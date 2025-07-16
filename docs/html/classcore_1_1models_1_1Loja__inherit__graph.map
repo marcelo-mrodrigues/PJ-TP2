@@ -1,0 +1,5 @@
+<map id="core.models.Loja" name="core.models.Loja">
+<area shape="rect" id="Node000001" title="Modelo que representa uma Loja onde os produtos podem ser comprados." alt="" coords="5,79,139,104"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="15,5,129,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="75,44,75,79,69,79,69,44"/>
+</map>

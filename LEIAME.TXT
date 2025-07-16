@@ -1,0 +1,40 @@
+Assusimindo que estamos em um sistema operacional Linux, 
+para utilização do nosso programa, deve ter instalado Pyhton, PostgreSQL, Doxygen, as demais dependencias estao abaixo:
+
+sudo apt update
+sudo apt install python3 python3-venv python3-pip
+sudo apt install postgresql postgresql-contrib -y
+sudo service postgresql status 
+sudo apt install doxygen
+
+Clonagem do repositorio:
+git clone https://github.com/marcelo-mrodrigues/PJ-TP2.git
+cd PJ-TP2
+
+Instalacoes de outras dependencias:
+make install
+
+Na pasta backend (ao lado do manage.py), crie um arquivo chamado .env (note o ponto no início) e adicione o seguinte conteúdo.
+DATABASE_URL="postgresql://postgres:URxBKtlrnzYopFkxmpmtSzgqGZQenXdw@centerbeam.proxy.rlwy.net:38773/railway"
+DJANGO_DEBUG="True"
+DJANGO_ALLOWED_HOSTS="localhost,127.0.0.1"
+
+Inicie o servidor de desenvolvimento do Django:
+make run-backend
+
+Para rodar os testes:
+make test
+
+Com esses comandos você pode executar os testes, e criar um report, com esse reporte você pode acessar um HTML que te mostra que linhas testou ou não.
+
+cd backend/
+source venv/bin/activate
+python manage.py test core # pra testar toda core
+python manage.py test core.testModels # pra testar um dos arquivos de teste
+coverage run manage.py test core # coverage total do core
+coverage report # pra passar pro html
+coverage html # pra abrir o html do coverage no navegador
+
+Para vizualizar a documentacao:
+doxygen Doxyfile
+xdg-open docs/html/index.html

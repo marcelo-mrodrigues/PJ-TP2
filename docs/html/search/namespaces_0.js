@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['core_0',['core',['../namespacecore.html',1,'']]],
+  ['core_3a_3aadmin_1',['admin',['../namespacecore_1_1admin.html',1,'core']]],
+  ['core_3a_3aapps_2',['apps',['../namespacecore_1_1apps.html',1,'core']]],
+  ['core_3a_3acontext_5fprocessors_3',['context_processors',['../namespacecore_1_1context__processors.html',1,'core']]],
+  ['core_3a_3aforms_4',['forms',['../namespacecore_1_1forms.html',1,'core']]],
+  ['core_3a_3amigrations_5',['migrations',['../namespacecore_1_1migrations.html',1,'core']]],
+  ['core_3a_3amigrations_3a_3a0001_5finitial_6',['0001_initial',['../namespacecore_1_1migrations_1_10001__initial.html',1,'core::migrations']]],
+  ['core_3a_3amigrations_3a_3a0002_5fproduto_5fadicionado_5fpor_7',['0002_produto_adicionado_por',['../namespacecore_1_1migrations_1_10002__produto__adicionado__por.html',1,'core::migrations']]],
+  ['core_3a_3amigrations_3a_3a0003_5falter_5fusuario_5foptions_5falter_5fusuario_5fmanagers_5fand_5fmore_8',['0003_alter_usuario_options_alter_usuario_managers_and_more',['../namespacecore_1_1migrations_1_10003__alter__usuario__options__alter__usuario__managers__and__more.html',1,'core::migrations']]],
+  ['core_3a_3amigrations_3a_3a0004_5falter_5fusuario_5fgroups_5falter_5fusuario_5fuser_5fpermissions_9',['0004_alter_usuario_groups_alter_usuario_user_permissions',['../namespacecore_1_1migrations_1_10004__alter__usuario__groups__alter__usuario__user__permissions.html',1,'core::migrations']]],
+  ['core_3a_3amigrations_3a_3a0005_5fremove_5fusuario_5frole_5falter_5fcategoria_5fid_5fand_5fmore_10',['0005_remove_usuario_role_alter_categoria_id_and_more',['../namespacecore_1_1migrations_1_10005__remove__usuario__role__alter__categoria__id__and__more.html',1,'core::migrations']]],
+  ['core_3a_3amigrations_3a_3a0006_5fproduto_5faprovado_11',['0006_produto_aprovado',['../namespacecore_1_1migrations_1_10006__produto__aprovado.html',1,'core::migrations']]],
+  ['core_3a_3amodels_12',['models',['../namespacecore_1_1models.html',1,'core']]],
+  ['core_3a_3atemplatetags_13',['templatetags',['../namespacecore_1_1templatetags.html',1,'core']]],
+  ['core_3a_3atemplatetags_3a_3acategoria_5ficons_14',['categoria_icons',['../namespacecore_1_1templatetags_1_1categoria__icons.html',1,'core::templatetags']]],
+  ['core_3a_3atestforms_15',['testForms',['../namespacecore_1_1testForms.html',1,'core']]],
+  ['core_3a_3atestmodels_16',['testModels',['../namespacecore_1_1testModels.html',1,'core']]],
+  ['core_3a_3atestutils_17',['testUtils',['../namespacecore_1_1testUtils.html',1,'core']]],
+  ['core_3a_3atestviews_18',['testViews',['../namespacecore_1_1testViews.html',1,'core']]],
+  ['core_3a_3aurls_19',['urls',['../namespacecore_1_1urls.html',1,'core']]],
+  ['core_3a_3autils_20',['utils',['../namespacecore_1_1utils.html',1,'core']]],
+  ['core_3a_3aviews_21',['views',['../namespacecore_1_1views.html',1,'core']]]
+];

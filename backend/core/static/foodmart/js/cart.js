@@ -1,9 +1,26 @@
-// static/foodmart/js/cart.js (Versão com botão de excluir)
+/**
+ * @fileoverview
+ * Script responsável por controlar a interface do carrinho de compras (offcanvas).
+ * Permite adicionar e remover produtos dinamicamente, usando requisições AJAX,
+ * e atualiza o painel lateral do carrinho.
+ * 
+ * URLs da API são extraídas do atributo `data-*` do elemento `<body>`.
+ * 
+ * Requisitos:
+ * - Bootstrap Offcanvas
+ * - Elementos com classes `.add-to-cart-btn`, `.remove-from-cart-btn`
+ * - Meta tag CSRF para Django
+ * 
+ */
 
 document.addEventListener('DOMContentLoaded', function() {
+    /** @type {HTMLElement} */
     const cartItemsList = document.getElementById('cart-items-list');
+    /** @type {HTMLElement} */
     const cartTotalPrice = document.getElementById('cart-total-price');
+    /** @type {HTMLElement} */
     const cartIconTotal = document.querySelector('.cart-total');
+    /** @type {HTMLElement} */ 
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
     // Pega todas as URLs da API a partir do body
@@ -12,7 +29,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const removeFromCartUrl = document.body.dataset.removeFromCartUrl; // <-- Nova URL
 
     /**
-     * Atualiza o painel lateral (offcanvas) do carrinho com novos dados.
+     * Atualiza visualmente o conteúdo do carrinho (offcanvas).
+     * @param {Object} cartData - Objeto retornado pela API contendo itens e total.
+     * @param {Array<Object>} cartData.items - Lista de itens do carrinho.
+     * @param {string|number} cartData.total - Valor total do carrinho.
      */
     function updateCartOffcanvas(cartData) {
         if (!cartItemsList || !cartTotalPrice) return;
@@ -47,8 +67,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    /**
+     * Busca os dados iniciais do carrinho ao carregar a página.
+     */
     async function fetchInitialCart() {
-        // ... (esta função continua a mesma)
         if (!getCartUrl) return;
         try {
             const response = await fetch(getCartUrl);
@@ -60,7 +82,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // --- EVENT LISTENER ATUALIZADO ---
+    /**
+     * Lida com cliques em botões de adicionar/remover itens do carrinho.
+     */
     document.body.addEventListener('click', function(event) {
 
         // Lógica para ADICIONAR item

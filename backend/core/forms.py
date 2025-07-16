@@ -1,9 +1,14 @@
+## @file forms.py
+#  @brief Formulários utilizados no sistema FoodMart, baseados em ModelForms e formulários de autenticação do Django.
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate
 from .models import Usuario, Produto, Loja, Oferta, Categoria, Marca, ItemLista, ListaCompra, Comentario
 
-
+## @class CustomUserCreationForm
+#  @brief Formulário customizado de registro de usuário.
+#  Adiciona os campos nome, sobrenome e e-mail ao formulário padrão do Django.
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = Usuario
@@ -20,13 +25,9 @@ class CustomUserCreationForm(UserCreationForm):
             if field_name == "email":
                 field.required = True
 
-
+## @class CustomAuthenticationForm
+#  @brief Formulário de login que permite autenticação via username ou e-mail.
 class CustomAuthenticationForm(AuthenticationForm):
-    """
-    Formulário customizado para autenticação de usuário, permitindo login
-    com nome de usuário (username) ou email.
-    """
-
     def __init__(self, request=None, *args, **kwargs):
         super().__init__(request=request, *args, **kwargs)
         # Altera o rótulo do campo 'username' para ser mais genérico
@@ -35,6 +36,7 @@ class CustomAuthenticationForm(AuthenticationForm):
         self.fields["username"].widget.attrs["class"] = "form-control"
         self.fields["password"].widget.attrs["class"] = "form-control"
 
+    ## @brief Valida as credenciais, permitindo login por e-mail.
     def clean(self):
         username = self.cleaned_data.get("username")
         password = self.cleaned_data.get("password")
@@ -63,7 +65,8 @@ class CustomAuthenticationForm(AuthenticationForm):
                 self.user_cache = user
         return self.cleaned_data
 
-
+## @class ProdutoForm
+#  @brief Formulário para criação ou edição de produtos.
 class ProdutoForm(forms.ModelForm):
     product_id_hidden = forms.IntegerField(widget=forms.HiddenInput(), required=False)
 
@@ -103,7 +106,8 @@ class ProdutoForm(forms.ModelForm):
         if self.instance and self.instance.pk:
             self.fields["product_id_hidden"].initial = self.instance.pk
 
-
+## @class LojaForm
+#  @brief Formulário para criação ou edição de lojas.
 class LojaForm(forms.ModelForm):
     store_id_hidden = forms.IntegerField(widget=forms.HiddenInput(), required=False)
 
@@ -132,7 +136,8 @@ class LojaForm(forms.ModelForm):
         if self.instance and self.instance.pk:
             self.fields["store_id_hidden"].initial = self.instance.pk
 
-
+## @class OfertaForm
+#  @brief Formulário para criação ou edição de ofertas de produtos.
 class OfertaForm(forms.ModelForm):
     offer_id_hidden = forms.IntegerField(widget=forms.HiddenInput(), required=False)
 
@@ -153,7 +158,8 @@ class OfertaForm(forms.ModelForm):
         if self.instance and self.instance.pk:
             self.fields["offer_id_hidden"].initial = self.instance.pk
 
-
+## @class CategoriaForm
+#  @brief Formulário para criação ou edição de categorias de produto.
 class CategoriaForm(forms.ModelForm):
     class Meta:
         model = Categoria
@@ -165,7 +171,8 @@ class CategoriaForm(forms.ModelForm):
         self.fields["nome"].widget.attrs["class"] = "form-control"
 
 
-
+## @class MarcaForm
+#  @brief Formulário para criação ou edição de marcas de produto.
 class MarcaForm(forms.ModelForm):
     class Meta:
         model = Marca
@@ -176,17 +183,22 @@ class MarcaForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["nome"].widget.attrs["class"] = "form-control"
 
-
+## @class ListaCompraForm
+#  @brief Formulário para criar ou editar uma lista de compras.
 class ListaCompraForm(forms.ModelForm):
     class Meta:
         model = ListaCompra
         fields = ["nome", "finalizada"]
 
+## @class ItemListaForm
+#  @brief Formulário para adicionar um item a uma lista de compras.
 class ItemListaForm(forms.ModelForm):
     class Meta:
         model = ItemLista
         fields = ["produto", "observacoes"]
-
+        
+## @class ComentarioForm
+#  @brief Formulário para envio de comentários em produtos.
 class ComentarioForm(forms.ModelForm):
     class Meta:
         model = Comentario

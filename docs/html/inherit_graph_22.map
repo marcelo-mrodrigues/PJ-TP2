@@ -1,0 +1,15 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,202,164,227"/>
+<area shape="rect" id="Node000001" href="$classcore_1_1migrations_1_10001__initial_1_1Migration.html" title=" " alt="" coords="257,5,417,45"/>
+<area shape="poly" id="edge12_Node000000_Node000001" title=" " alt="" coords="97,188,141,122,173,86,211,55,256,35,258,40,213,60,177,89,145,125,101,191"/>
+<area shape="rect" id="Node000002" href="$classcore_1_1migrations_1_10002__produto__adicionado__por_1_1Migration.html" title=" " alt="" coords="212,69,463,109"/>
+<area shape="poly" id="edge13_Node000000_Node000002" title=" " alt="" coords="108,191,154,154,211,119,241,107,243,112,213,124,157,158,111,195"/>
+<area shape="rect" id="Node000003" href="$classcore_1_1migrations_1_10003__alter__usuario__options__alter__usuario__managers__and__more_1_1Migration.html" title=" " alt="" coords="244,133,431,203"/>
+<area shape="poly" id="edge14_Node000000_Node000003" title=" " alt="" coords="167,197,243,183,244,188,168,202"/>
+<area shape="rect" id="Node000004" href="$classcore_1_1migrations_1_10004__alter__usuario__groups__alter__usuario__user__permissions_1_1Migration.html" title=" " alt="" coords="218,227,457,296"/>
+<area shape="poly" id="edge15_Node000000_Node000004" title=" " alt="" coords="168,227,218,237,217,242,167,233"/>
+<area shape="rect" id="Node000005" href="$classcore_1_1migrations_1_10005__remove__usuario__role__alter__categoria__id__and__more_1_1Migration.html" title=" " alt="" coords="249,320,426,389"/>
+<area shape="poly" id="edge16_Node000000_Node000005" title=" " alt="" coords="113,235,158,270,213,306,250,323,247,328,211,310,155,275,110,239"/>
+<area shape="rect" id="Node000006" href="$classcore_1_1migrations_1_10006__produto__aprovado_1_1Migration.html" title=" " alt="" coords="231,413,444,453"/>
+<area shape="poly" id="edge17_Node000000_Node000006" title=" " alt="" coords="98,239,115,275,141,319,173,362,214,399,234,411,232,416,210,403,169,366,136,322,111,278,94,241"/>
+</map>
