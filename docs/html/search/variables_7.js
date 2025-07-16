@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['marca_0',['marca',['../classcore_1_1testForms_1_1ProdutoFormTest.html#a0bda1e626f92759f44855829e907ff12',1,'core.testForms.ProdutoFormTest.marca'],['../classcore_1_1testViews_1_1ManagementViewsTest.html#a544878bc332229d8d86c7bbdcc485082',1,'core.testViews.ManagementViewsTest.marca'],['../classcore_1_1models_1_1Produto.html#ae8747228db54327f4945fbac94b97d27',1,'core.models.Produto.marca']]],
+  ['marca_0',['marca',['../classcore_1_1testForms_1_1ProdutoFormTest.html#a0bda1e626f92759f44855829e907ff12',1,'core.testForms.ProdutoFormTest.marca'],['../classcore_1_1testUtils_1_1MergeSessionCartTests.html#a79fe6db454636a30881fb8b8013dba7f',1,'core.testUtils.MergeSessionCartTests.marca'],['../classcore_1_1testViews_1_1ManagementViewsTest.html#a544878bc332229d8d86c7bbdcc485082',1,'core.testViews.ManagementViewsTest.marca'],['../classcore_1_1models_1_1Produto.html#ae8747228db54327f4945fbac94b97d27',1,'core.models.Produto.marca']]],
   ['marca_5fapple_1',['marca_apple',['../classcore_1_1testModels_1_1ModelCreationTest.html#a0a2563b3d7bf2bd78c5bdb8cd8e601d3',1,'core::testModels::ModelCreationTest']]],
   ['marca_5flogitech_2',['marca_logitech',['../classcore_1_1testUtils_1_1ProductInfoUtilsTest.html#a0b9f0ebcd296034fb867e57169c50bef',1,'core::testUtils::ProductInfoUtilsTest']]],
   ['marca_5fsamsung_3',['marca_samsung',['../classcore_1_1testModels_1_1ModelCreationTest.html#a5a10f73bb56c887238639c6d7d314517',1,'core::testModels::ModelCreationTest']]],

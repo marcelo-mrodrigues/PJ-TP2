@@ -109,9 +109,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ae57fce50fff8ee2d67aa32392687f046" id="r_ae57fce50fff8ee2d67aa32392687f046"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1testViews_1_1ApiViewsTest.html#ae57fce50fff8ee2d67aa32392687f046">setUp</a> (self)</td></tr>
 <tr class="memdesc:ae57fce50fff8ee2d67aa32392687f046"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configura o ambiente de teste antes de cada método de teste.  <br /></td></tr>
 <tr class="separator:ae57fce50fff8ee2d67aa32392687f046"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a324c440e04e2b127d733ccf5b869cc52" id="r_a324c440e04e2b127d733ccf5b869cc52"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1testViews_1_1ApiViewsTest.html#a324c440e04e2b127d733ccf5b869cc52">test_product_catalog_view</a> (self)</td></tr>
-<tr class="memdesc:a324c440e04e2b127d733ccf5b869cc52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Testa a view de catálogo de produtos via API (<code>product_catalog_view</code>).  <br /></td></tr>
-<tr class="separator:a324c440e04e2b127d733ccf5b869cc52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a423cf0d579b40899a0a72414f0cf7d2d" id="r_a423cf0d579b40899a0a72414f0cf7d2d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1testViews_1_1ApiViewsTest.html#a423cf0d579b40899a0a72414f0cf7d2d">test_get_product_data_api_found</a> (self)</td></tr>
 <tr class="memdesc:a423cf0d579b40899a0a72414f0cf7d2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Testa a view de detalhes de produto via API (<code>get_product_data_api</code>) para um produto existente.  <br /></td></tr>
 <tr class="separator:a423cf0d579b40899a0a72414f0cf7d2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -127,6 +124,8 @@ Public Attributes</h2></td></tr>
 <tr class="separator:ae43f4b3b04f0f659409817c8864a9796"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add4c39473ec262ef6109412ba1bd8975" id="r_add4c39473ec262ef6109412ba1bd8975"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1testViews_1_1ApiViewsTest.html#add4c39473ec262ef6109412ba1bd8975">produto</a></td></tr>
 <tr class="separator:add4c39473ec262ef6109412ba1bd8975"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bf39a7247d666f7ef440d9e08ac56e6" id="r_a0bf39a7247d666f7ef440d9e08ac56e6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classcore_1_1testViews_1_1ApiViewsTest.html#a0bf39a7247d666f7ef440d9e08ac56e6">loja</a></td></tr>
+<tr class="separator:a0bf39a7247d666f7ef440d9e08ac56e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Conjunto de testes para as views de API. </p>
@@ -195,27 +194,6 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a324c440e04e2b127d733ccf5b869cc52" name="a324c440e04e2b127d733ccf5b869cc52"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a324c440e04e2b127d733ccf5b869cc52">&#9670;&#160;</a></span>test_product_catalog_view()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">core.testViews.ApiViewsTest.test_product_catalog_view </td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>self</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Testa a view de catálogo de produtos via API (<code>product_catalog_view</code>). </p>
-<p>Verifica se a view retorna um status HTTP 200 (OK) e se a resposta JSON contém a chave 'products'. </p>
-
-</div>
-</div>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a id="a4520ffaabd0bd2b5138c0c8d7d9a4558" name="a4520ffaabd0bd2b5138c0c8d7d9a4558"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4520ffaabd0bd2b5138c0c8d7d9a4558">&#9670;&#160;</a></span>client</h2>
@@ -225,6 +203,20 @@ Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">core.testViews.ApiViewsTest.client</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a0bf39a7247d666f7ef440d9e08ac56e6" name="a0bf39a7247d666f7ef440d9e08ac56e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0bf39a7247d666f7ef440d9e08ac56e6">&#9670;&#160;</a></span>loja</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">core.testViews.ApiViewsTest.loja</td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -291,7 +291,7 @@ class BaseHtmlContextTest(TestCase):
         self.assertEqual(_get_action_value_for_form("Gerenciar Ofertas"), "add_or_update")
         self.assertEqual(_get_action_value_for_form("Outro título qualquer"), "")
 
- ## @brief Testes para a função `merge_session_cart_to_db`.
+## @brief Testes para a função `merge_session_cart_to_db`.
 #
 # Verifica o comportamento de mesclagem do carrinho da sessão para o banco de dados, garantindo a
 # criação correta de listas de compras e itens, e o tratamento de produtos inválidos.
