@@ -1,0 +1,67 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Editar Lista: {{ lista.nome }}{% endblock %}
+
+{% block main_content %}
+<div class="container mt-5">
+    <h2>Editar Lista: {{ lista.nome }}</h2>
+
+    <!-- MENSAGENS -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- FORMULÁRIO PARA ADICIONAR ITEM -->
+    <h4>Adicionar Novo Item</h4>
+    <form method="post" action="{% url 'core:editar_lista' lista.id %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Adicionar Item</button>
+    </form>
+
+    <hr>
+
+    <!-- LISTA DE ITENS -->
+    <h4>Itens da Lista</h4>
+    {% if lista.itens.exists %}
+        {% for item in lista.itens.all %}
+            <div class="d-flex justify-content-between align-items-center mb-2 p-2 border-bottom">
+                <div>
+                    <strong>{{ item.produto.nome }}</strong>
+                    {% if item.observacoes %}
+                        <p class="mb-0 text-muted"><small>Obs: {{ item.observacoes }}</small></p>
+                    {% endif %}
+                </div>
+                <form method="post" action="{% url 'core:deletar_item_lista' item.id %}">
+                    {% csrf_token %}
+                    <button class="btn btn-danger btn-sm">🗑️ Excluir</button>
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Nenhum item ainda nesta lista.</p>
+    {% endif %}
+
+    <hr>
+
+    <!-- BOTÕES DE AÇÕES ADICIONAIS -->
+    {% if not lista.finalizada %}
+        <form method="post" action="{% url 'core:finalizar_lista' lista.id %}" class="d-inline-block me-2">
+            {% csrf_token %}
+            <button class="btn btn-success">Finalizar Lista ✅</button>
+        </form>
+        <form method="post" action="{% url 'core:adicionar_lista_ao_carrinho' lista.id %}" class="d-inline-block">
+            {% csrf_token %}
+            <button class="btn btn-warning">Adicionar ao Carrinho 🛒</button>
+        </form>
+    {% else %}
+        <div class="alert alert-info">Esta lista está finalizada.</div>
+    {% endif %}
+
+    <br><br>
+    <a href="{% url 'core:ver_listas' %}">← Voltar para suas listas</a>
+</div>
+{% endblock %}

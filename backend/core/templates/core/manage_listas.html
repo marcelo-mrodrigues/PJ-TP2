@@ -1,0 +1,70 @@
+{% extends "core/base.html" %}
+{% block title %}Minhas Listas de Compra{% endblock %}
+
+{% block main_content %}
+<div class="container mt-5">
+  <h1 class="mb-4">Minhas Listas de Compras</h1>
+
+  <!-- FORMULARIO DE NOVA LISTA -->
+  <form method="post" class="mb-4">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="add_lista" />
+    {{ form_lista.as_p }}
+    <button type="submit" class="btn btn-primary">Criar Lista</button>
+  </form>
+
+  <hr>
+
+  {% for lista in listas %}
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between">
+        <strong>{{ lista.nome }}</strong>
+        <div>
+          {% if lista.finalizada %}
+            <span class="badge bg-success me-2">Finalizada</span>
+          {% endif %}
+          <form method="post" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="popular_carrinho" />
+            <input type="hidden" name="lista_id" value="{{ lista.id }}" />
+            <button class="btn btn-sm btn-outline-primary">Popular Carrinho</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ITENS DA LISTA -->
+      <ul class="list-group list-group-flush">
+        {% for item in lista.itens.all %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            {{ item.produto.nome }}
+            <form method="post" class="m-0">
+              {% csrf_token %}
+              <input type="hidden" name="action" value="delete_item" />
+              <input type="hidden" name="item_id" value="{{ item.id }}" />
+              <button class="btn btn-sm btn-danger">Excluir</button>
+            </form>
+          </li>
+        {% empty %}
+          <li class="list-group-item">Nenhum item adicionado ainda.</li>
+        {% endfor %}
+      </ul>
+
+      <!-- FORMULARIO DE ADICIONAR ITEM -->
+      <div class="card-body">
+        <form method="post" class="row g-2 align-items-center">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="add_item" />
+          <input type="hidden" name="lista_id" value="{{ lista.id }}" />
+          <div class="col-md-6">
+            {{ form_item.produto }}
+          </div>
+
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-sm btn-outline-success">Adicionar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -27,6 +27,43 @@
             <ul id="offers-list" class="list-group"></ul>
         </div>
     </div>
+
+    <hr class="my-5">
+
+    <h4>Comentários</h4>
+
+    {% for comentario in comentarios %}
+      <div class="border p-3 mb-3 rounded">
+        <p class="mb-1">
+          <strong>{{ comentario.usuario.username }}</strong> — {{ comentario.data|date:"d/m/Y H:i" }}
+        </p>
+        {% if comentario.nota %}
+          <p class="mb-1">Nota: ⭐ {{ comentario.nota }}/5</p>
+        {% endif %}
+        <p class="mb-0">{{ comentario.texto }}</p>
+      </div>
+    {% empty %}
+      <p class="text-muted">Nenhum comentário ainda.</p>
+    {% endfor %}
+
+    {% if request.user.is_authenticated %}
+      <hr>
+      <h5>Deixe seu comentário</h5>
+      <form method="post" action="{% url 'core:comentar_produto' product_id %}" class="mt-3">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="id_texto" class="form-label">Comentário:</label>
+          {{ form_comentario.texto }}
+        </div>
+        <div class="mb-3">
+          <label for="id_nota" class="form-label">Nota (1 a 5):</label>
+          {{ form_comentario.nota }}
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+      </form>
+    {% else %}
+      <p class="text-muted mt-4">Faça <a href="{% url 'core:login' %}?next={{ request.path }}">login</a> para comentar.</p>
+    {% endif %}
 </div>
 {% endblock %}
 
@@ -44,18 +81,13 @@
         const productId = JSON.parse(productIdElement.textContent);
         const endpoint = JSON.parse(endpointElement.textContent);
 
-
-
         fetch(endpoint)
             .then(response => {
                 if (!response.ok) throw new Error("Produto não encontrado");
                 return response.json();
             })
             .then(data => {
-
                 const product = data.product;
-
-                
 
                 document.getElementById("product-image").src = product.imagem_url;
                 document.getElementById("product-name").textContent = product.nome;

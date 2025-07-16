@@ -2,10 +2,12 @@
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, get_user_model
+from django.utils import timezone
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from datetime import date
 from django.urls import reverse
 from .utils import render_lojas_html, process_loja_form, _get_base_html_context
 from django.http import JsonResponse
@@ -14,7 +16,7 @@ from .models import Produto
 
 # Funções e modelos do seu projeto
 from .utils import get_product_info, search_products, merge_session_cart_to_db
-from .models import Produto, Oferta, Categoria, Marca, Loja
+from .models import Produto, Oferta, Categoria, Marca, Loja, ItemComprado, ListaCompra, ItemLista
 from .forms import (
     CustomUserCreationForm,
     CustomAuthenticationForm,
@@ -23,6 +25,9 @@ from .forms import (
     OfertaForm,
     CategoriaForm, 
     MarcaForm,
+    ListaCompraForm,
+    ItemListaForm,
+    ComentarioForm,
 )
 from django.contrib.auth import logout
 
@@ -36,27 +41,38 @@ def get_cart_data(request):
     total_geral = 0
 
     for product_id, item_data in cart.items():
-        produto = Produto.objects.get(id=product_id)
-        total_item = item_data["quantity"] * float(
-            produto.ofertas.order_by("preco").first().preco
-        )  # Exemplo de preço
+        try:
+            produto = Produto.objects.get(id=product_id)
+            oferta = produto.ofertas.order_by("preco").first()
 
-        cart_items.append(
-            {
-                "id": produto.id,
-                "nome": produto.nome,
-                "quantity": item_data["quantity"],
-                "preco": f"{total_item / item_data['quantity']:.2f}",
-                "total_item": f"{total_item:.2f}",
-                "imagem_url": produto.imagem_url,
-            }
-        )
-        total_geral += total_item
+            # Protege contra produto sem oferta
+            if oferta:
+                preco_unitario = float(oferta.preco)
+            else:
+                preco_unitario = 0.0
+
+            total_item = item_data["quantity"] * preco_unitario
+
+            cart_items.append(
+                {
+                    "id": produto.id,
+                    "nome": produto.nome,
+                    "quantity": item_data["quantity"],
+                    "preco": f"{preco_unitario:.2f}",
+                    "total_item": f"{total_item:.2f}",
+                    "imagem_url": produto.imagem_url,
+                }
+            )
+
+            total_geral += total_item
+
+        except Produto.DoesNotExist:
+            continue  # Ignora produtos deletados
 
     return {
         "items": cart_items,
         "total": f"{total_geral:.2f}",
-        "item_count": sum(d["quantity"] for d in cart.values()),
+        "item_count": sum(item["quantity"] for item in cart.values()),
     }
 
 
@@ -105,6 +121,75 @@ def checkout_view(request):
     return render(request, "core/checkout.html", context)
 
 
+@login_required
+def finalizar_compra_view(request):
+    """
+    Processa a compra a partir dos dados do carrinho e salva como itens comprados.
+    Redireciona para a home ao final.
+    """
+    if request.method == "POST":
+        cart = request.session.get("cart", {})
+
+        if not cart:
+            messages.warning(request, "Seu carrinho está vazio.")
+            return redirect("core:product_catalog_page")
+
+        for product_id, item_data in cart.items():
+            try:
+                produto = Produto.objects.get(id=product_id)
+                oferta = produto.ofertas.order_by("preco").first()
+
+                ItemComprado.objects.create(
+                    usuario=request.user,
+                    produto=produto,
+                    loja=oferta.loja if oferta else None,
+                    preco_pago=oferta.preco if oferta else 0,
+                    data_compra=timezone.now().date(),
+                )
+            except Produto.DoesNotExist:
+                continue  # Ignora se o produto foi deletado
+
+        # Limpa o carrinho da sessão
+        request.session["cart"] = {}
+        messages.success(request, "Compra finalizada com sucesso!")
+        return redirect("core:home")
+
+    return redirect("core:checkout")
+
+@login_required
+def finalizar_compra_view(request):
+    if request.method == "POST":
+        cart = request.session.get("cart", {})
+
+        if not cart:
+            messages.error(request, "Seu carrinho está vazio.")
+            return redirect("core:product_catalog_page")
+
+        for product_id, item_data in cart.items():
+            try:
+                produto = Produto.objects.get(id=product_id)
+                oferta = produto.ofertas.order_by("preco").first()
+
+                ItemComprado.objects.create(
+                    usuario=request.user,
+                    produto=produto,
+                    loja=oferta.loja if oferta else None,
+                    preco_pago=oferta.preco if oferta else 0.0,
+                    data_compra=date.today(),
+                )
+            except Produto.DoesNotExist:
+                continue  
+
+        # Limpa carrinho
+        del request.session["cart"]
+        messages.success(request, "Compra finalizada com sucesso!")
+
+        return redirect("core:home")
+
+    # Se alguém acessar via GET, redireciona para o checkout
+    return redirect("core:checkout")
+
+
 def remove_from_cart_view(request):
     """API para remover um item completamente do carrinho."""
     if request.method == "POST":
@@ -121,6 +206,104 @@ def remove_from_cart_view(request):
 
     return JsonResponse({"error": "Método inválido"}, status=400)
 
+def manage_shopping_lists_view(request):
+    form_lista = ListaCompraForm()
+    form_item = ItemListaForm()
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        if action == "add_lista":
+            form_lista = ListaCompraForm(request.POST)
+            if form_lista.is_valid():
+                nova_lista = form_lista.save(commit=False)
+                nova_lista.usuario = request.user
+                nova_lista.save()
+                messages.success(request, f"Lista '{nova_lista.nome}' criada!")
+                return redirect("core:manage_shopping_lists")
+
+        elif action == "add_item":
+            lista_id = request.POST.get("lista_id")
+            lista = get_object_or_404(ListaCompra, id=lista_id, usuario=request.user)
+            form_item = ItemListaForm(request.POST)
+            if form_item.is_valid():
+                novo_item = form_item.save(commit=False)
+                novo_item.lista = lista
+                try:
+                    novo_item.save()
+                    messages.success(request, f"Item adicionado à lista '{lista.nome}'!")
+                except Exception as e:
+                    messages.error(request, "Esse produto já está na lista.")
+                return redirect("core:manage_shopping_lists")
+
+        elif action == "delete_item":
+            item_id = request.POST.get("item_id")
+            item = get_object_or_404(ItemLista, id=item_id, lista__usuario=request.user)
+            item.delete()
+            messages.success(request, f"Item removido da lista.")
+            return redirect("core:manage_shopping_lists")
+
+        elif action == "popular_carrinho":
+            lista_id = request.POST.get("lista_id")
+            lista = get_object_or_404(ListaCompra, id=lista_id, usuario=request.user)
+            session_cart = request.session.get("cart", {})
+
+            for item in lista.itens.all():
+                product_id = str(item.produto.id)
+                if product_id not in session_cart:
+                    session_cart[product_id] = {
+                        "quantity": 1,
+                        "added_from_list": True
+                    }
+
+            request.session["cart"] = session_cart
+            messages.success(request, f"Carrinho populado com os itens da lista '{lista.nome}'!")
+            return redirect("core:manage_shopping_lists")
+
+    # GET: Renderizar página
+    listas = ListaCompra.objects.filter(usuario=request.user).prefetch_related("itens__produto")
+
+    return render(
+        request,
+        "core/manage_listas.html",
+        {
+            "form_lista": form_lista,
+            "form_item": form_item,
+            "listas": listas,
+        },
+    )
+
+def deletar_item_lista(request, item_id):
+    item = get_object_or_404(ItemLista, id=item_id)
+    
+    if item.lista.usuario == request.user:
+        item.delete()
+    
+    return redirect("core:editar_lista", lista_id=item.lista.id)
+
+
+def usar_lista_como_carrinho(request, lista_id):
+    lista = get_object_or_404(ListaCompra, id=lista_id, usuario=request.user)
+    
+    cart = request.session.get("cart", {})
+
+    for item in lista.itens.all():
+        produto_id = str(item.produto.id)
+        if produto_id in cart:
+            cart[produto_id]["quantity"] += 1  # ou += item.quantidade se tiver
+        else:
+            cart[produto_id] = {"quantity": 1}
+
+    request.session["cart"] = cart
+    request.session.modified = True
+
+    return redirect("core:ver_carrinho") 
+
+def finalizar_lista(request, lista_id):
+    lista = get_object_or_404(ListaCompra, id=lista_id, usuario=request.user)
+    lista.finalizada = True
+    lista.save()
+    return redirect("core:ver_listas")
 
 def home_view(request):
     """
@@ -203,24 +386,38 @@ def product_catalog_view(request):
     return JsonResponse({"products": produtos_data})
 
 
+
 def produto_view(request, product_id):
-    # === CORREÇÃO AQUI: Passar a URL RELATIVA do proxy para o template ===
-    # Esta URL deve ser o prefixo do proxy + a URL da API real no Django
-    endpoint_url = reverse(
-        "core:get_product_data_api", args=[product_id]
-    )  # Ex: /api/produto-dados/1/
-    # O browser fará o fetch para /api/produto-dados/1/
-    # E o next.config.mjs vai reescrever para http://localhost:8000/api/produto-dados/1/
+    endpoint_url = reverse("core:get_product_data_api", args=[product_id])
+    produto = get_object_or_404(Produto, id=product_id)
+    comentarios = produto.comentarios.select_related("usuario").all()
+    form_comentario = ComentarioForm()
 
     return render(
         request,
         "core/produto.html",
         {
             "product_id": product_id,
-            "endpoint_url": endpoint_url,  # Agora passa a URL relativa do proxy
+            "endpoint_url": endpoint_url,
+            "comentarios": comentarios,
+            "form_comentario": form_comentario,
         },
     )
 
+def adicionar_comentario_view(request, product_id):
+    produto = get_object_or_404(Produto, id=product_id)
+
+    if request.method == "POST":
+        form = ComentarioForm(request.POST)
+        if form.is_valid():
+            comentario = form.save(commit=False)
+            comentario.usuario = request.user
+            comentario.produto = produto
+            comentario.save()
+            messages.success(request, "Comentário enviado com sucesso!")
+        else:
+            messages.error(request, "Erro ao enviar comentário.")
+    return redirect("core:produto", product_id=product_id)
 
 def get_product_data_api(request, product_id):
     """API: Retorna os detalhes de um produto específico em formato JSON."""
@@ -321,9 +518,6 @@ def lista_de_compras_view(request):
     return render(request, "core/placeholder.html", {"title": "Minha Lista de Compras"})
 
 
-@login_required
-def historico_view(request):
-    return render(request, "core/placeholder.html", {"title": "Histórico de Compras"})
 
 
 # ================================================================= #

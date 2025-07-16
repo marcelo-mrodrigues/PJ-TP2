@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate
-from .models import Usuario, Produto, Loja, Oferta, Categoria, Marca
+from .models import Usuario, Produto, Loja, Oferta, Categoria, Marca, ItemLista, ListaCompra, Comentario
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -175,3 +175,23 @@ class MarcaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["nome"].widget.attrs["class"] = "form-control"
+
+
+class ListaCompraForm(forms.ModelForm):
+    class Meta:
+        model = ListaCompra
+        fields = ["nome", "finalizada"]
+
+class ItemListaForm(forms.ModelForm):
+    class Meta:
+        model = ItemLista
+        fields = ["produto", "observacoes"]
+
+class ComentarioForm(forms.ModelForm):
+    class Meta:
+        model = Comentario
+        fields = ["texto", "nota"]
+        widgets = {
+            "texto": forms.Textarea(attrs={"rows": 3, "class": "form-control"}),
+            "nota": forms.NumberInput(attrs={"min": 1, "max": 5, "class": "form-control"}),
+        }
