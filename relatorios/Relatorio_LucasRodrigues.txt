@@ -1,0 +1,8 @@
+Nome: Lucas Rodrigues
+Log de Atividades do Projeto
+Data Horas Tipo de Tarefa Descrição da Tarefa
+10/07 3h Estudo teórico Revisão de conceitos fundamentais de engenharia de software, com foco em análise de requisitos e modelagem.
+11/07 2h Elaboração de artefato (Diagrama de Casos de Uso) Criação do diagrama de casos de uso da aplicação, representando as principais interações dos usuários.
+13/07 3h Elaboração de artefato (Diagrama de Classes) Modelagem inicial do sistema em um diagrama de classes, representando entidades, atributos e relacionamentos.
+14/07 3h Documentação Início da documentação do projeto no padrão SRS (Software Requirements Specification).
+16/07 2h Revisão e ajustes Revisão geral dos artefatos produzidos (diagramas e documentação), refinando descrições e padronizações.
