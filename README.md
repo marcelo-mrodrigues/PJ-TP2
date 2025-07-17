@@ -19,7 +19,7 @@
 | **Formatador de Código** | Black, Prettier  |
 | **Framework de Teste** | Pytest, Jest  |
 | **Verificador de Cobertura** | coverage.py, Jest --coverage  |
-| **Documentação** | ???  |
+| **Documentação** | Doxygen  |
 | **Controle de Versão** | Github  |
 | **Gestão de Projeto** | Asana  |
 
