@@ -1,0 +1,33 @@
+Lucas Resende Silveira Reis - 180144421
+
+Log de atividades do projeto
+
+09/06 ~ 20/06 - 3h -  Histórias de usuário, e diagramas em sala de aula
+
+24/06 - 3h -  Diagrama de banco de dados, para ajudar o entendimento geral do projeto 
+
+26/06 - 8h -  Commit inicial, já com BD no docker, login e registros (inicial) e README atualizado pra facilidar instalação e uso do projeto
+
+28/06 - 3h -  Modelo de relacionamento de Classes
+
+28/06 - 3h - Transformando a classe de usuário como filho de usuário padrão do Django
+
+29/06 - 3h - Login e Registro funcionando corretamente com forms e no padrão Django
+
+01/07 - 2h - Criação de tarefas no asana, além de paths + função na view para delimitar onde escrever
+
+12/07 - 8h - Telas (com front provisória) de gerenciar-lojas, gerenciar-produtos, gerenciar-ofertas, além das funções e forms pra isso
+
+13/07 - 2h - Aprendizado de uso de testes + introdução de testes + upgrade do README com os comandos pra testes
+
+13/07 - 8h - Integração de front com back + Login e Registros (no Front) + página de produto (Front) + problemas com integração
+
+14/07 (+ madrugada) - 08h - Front foi refeita no padrão do Django + Testes e Produtos arrumados + HTML base pra DRY (dont repeat yourself)
+
+15/07 (+ madrugada) - 10h - Manage de produtos, lojas, ofertas, marcas, categorias, comentários, listas de compra e att no header de ADM, além de Pesquisa por categoria.
+
+16/07 - 2h - aumento de cobertura com adição de testes para aumentar a confiabilidade do código 
+
+Também expliquei como usar as ferramentas em chamada com os outros integrantes.
+Fiquei algumas horas estudando sobre a estruturas, a organização e ferramentas usadas, somado deve ter dado umas 10h
+
