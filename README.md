@@ -21,7 +21,9 @@
 | **Verificador de Cobertura** | coverage.py, Jest --coverage  |
 | **Documentação** | Doxygen  |
 | **Controle de Versão** | Github  |
-| **Gestão de Projeto** | Asana  |
+| **Gestão de Projeto** | Trello  |
+
+Link do Trello: https://trello.com/b/ki9VvnjI
 
 # TUTORIAL DE PREPARAÇÃO DE AMBIENTE [no vscode linux]
 ## essa etapa 0 é apenas para quem não conseguir a partir do 1
