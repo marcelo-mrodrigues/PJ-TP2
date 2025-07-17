@@ -1,0 +1,23 @@
+~Marcelo Marques Rodrigues - 221018960 - PO
+
+Data  | Horas Trabalhadas | Tipo Tarefa | Descrição da Tarefa Realizada
+
+16/06 |      2 Horas       | gerenciar a construção do software | Término de convidar todos os membros para o Github e escolha das ferramentas que seriam utilizadas no projeto
+
+17/06 |      5 Horas      | projetar & Revisar especificações | Configuração de ambiente e ferramentas para todos os membros no github , Makefile , Projeto Next.js , requirements.txt , Verificador Estático
+
+18/06 |      2 Horas      | gerenciar a construção do software | Criação do Asana (Kanban), Escrevendo Tarefas
+
+19/06 |      2 Hora       | gerenciar a construção do software | Delegação de Tarefas com prazos e prioridades
+
+24/06 |     2 Horas       | projetar & Revisar especificações  | Discussão sobre o fluxo das entidades no Projeto em aula
+
+26/06 |      ~2 Horas      | Estudar aula e laboratórios relacionados  | Documentação Django
+
+27/06 |     1 Hora        | Revisar Projetos | Pull e configuração do backend em ambiente virtual no vscode
+
+15/07 |     2 Horas       | Realizar os testes , Revisar Casos de teste | Análise dos testes , Verificação de cobertura
+
+16/07 |     3 Horas        | Revisar as Especificações e Estudar aulas e laboratórios relacionados | Atendimento as especificações do roteiro do projeto para envio e apresentação do projeto também.
+
+
