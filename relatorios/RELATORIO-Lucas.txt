@@ -1,0 +1,7 @@
+Lucas Cardoso Moreira - 221017103
+
+Log de atividades do projeto
+
+19/06 - 02/07 - 3h - Análises e testes do projeto
+07/07 - 09/07 - 3h - Tentativa de refatoração de alguns componentes
+10/07 - 16/07 - 2h - Análise e correção de bugs
