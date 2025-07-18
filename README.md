@@ -99,10 +99,10 @@ DJANGO_ALLOWED_HOSTS="localhost,127.0.0.1"
 ```
 Importante: Substitua SUA_DATABASE_URL_DO_RAILWAY pela URL real do seu serviço PostgreSQL no Railway.
 
-##  4- Rodar o Servidor de Desenvolvimento do Backend (Django)
-Inicie o servidor de desenvolvimento do Django.
+##  4- Rodar o Projeto (Django)
+Inicie o Projeto.
 ```
-make run-backend
+make run
 ```
 O servidor Django estará acessível em http://127.0.0.1:8000/.
 
@@ -137,20 +137,36 @@ python manage.py createsuperuser
 cd .. # Volte para a raiz do projeto
 ```
 
-##  7- (Opcional) Rodar os Testes
+##  7- (Opcional) Rodar os Testes ou Verificar Coverage dos testes
 Utilize o comando make test para rodar os testes.
+na pasta raiz
 ```
 make test
 ```
-com esses comandos você pode executar os testes, e criar um report, com esse reporte você pode acessar um HTML que te mostra que linhas testou ou não.
-
+ou, caso queira rodar um arquivo de teste específico
 
 ```
 cd backend/
 source venv/bin/activate
 python manage.py test core # pra testar toda core
-python manage.py test core.testModels # pra testar um dos arquivos de teste
+python manage.py test core.testModels # pra testar um dos arquivos de teste 
+```
+
+Com make coverage você pode criar um coverage dos testes, e com make report_coverage você reporta ele, com esse reporte você pode acessar um HTML que te mostra que linhas testou ou não.
+
+na pasta raiz
+
+```
+make coverage
+make report_coverage
+
+```
+ou
+
+```
+cd backend/
 coverage run manage.py test core # coverage total do core
 coverage report # pra passar pro html
 coverage html # pra abrir o html do coverage no navegador
 ```
+

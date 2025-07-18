@@ -12,7 +12,7 @@ install:
 
 test:
 	@echo "\n rodando testes do Backend"
-	./backend/venv/bin/pytest backend/
+	cd backend && venv/bin/python manage.py test core
 	@echo "\n rodando testes do Frontend"
 	npm --prefix ./frontend test
 
@@ -30,20 +30,24 @@ format:
 	@echo "\n Formatando código do Frontend (prettier)..."
 	npm --prefix ./frontend run format
 
-# cobertura (pode mudar ainda)
+# cobertura 
 coverage:
-	@echo "--- Gerando relatório de cobertura do Backend..."
-	./backend/venv/bin/coverage run -m pytest backend/
-	./backend/venv/bin/coverage report -m
-	@echo "\n--- Gerando relatório de cobertura do Frontend..."
-	npm --prefix ./frontend test -- --coverage
+	@echo "--- Executando testes com coverage..."
+	cd backend && venv/bin/coverage run manage.py test core
 
-# roda front
-run-dev:
-	npm --prefix ./frontend run dev
+# report cobertura 
+report_coverage:
+	@echo "--- Gerando relatório..."
+	cd backend && venv/bin/coverage report
+	@echo "--- Gerando HTML..."
+	cd backend && venv/bin/coverage html
+
+
+
+
 
 # Inicia o servidor de desenvolvimento do Backend (Django)
-run-backend:
+run:
 	@echo "--- Iniciando servidor de desenvolvimento Backend (Django)..."
 	./backend/venv/bin/python backend/manage.py runserver
 
